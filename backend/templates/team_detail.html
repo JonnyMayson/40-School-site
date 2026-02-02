@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="team-category-hero" style="padding: 140px 0 80px; background: #fff;">
+    <div class="container" style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px; align-items: start;">
+        <!-- Left: Category Image -->
+        <div class="category-image-wrapper" style="position: relative;">
+            {% if user.is_staff %}
+            <a href="{% url 'admin:content_teamcategory_change' category.id %}" class="admin-edit-btn" target="_blank"
+                style="z-index: 10;">📷 Change Image</a>
+            {% endif %}
+
+            <div style="width: 100%; height: 400px; background: #eee; border-radius: 20px; overflow: hidden;">
+                {% if category.image %}
+                <img src="{{ category.image.url }}" alt="{{ category.title }}"
+                    style="width: 100%; height: 100%; object-fit: cover;">
+                {% else %}
+                <div
+                    style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #aaa;">
+                    No Image</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Right: Text Info -->
+        <div class="category-info" style="position: relative;">
+            {% if user.is_staff %}
+            <a href="{% url 'admin:content_teamcategory_change' category.id %}" class="admin-edit-btn" target="_blank"
+                style="top: -10px; right: 0;">✏️ Edit Info</a>
+            {% endif %}
+
+            <div style="margin-bottom: 20px; color: var(--accent); font-weight: 600; text-transform: uppercase;">
+                QUNDYLYQ Командасы</div>
+            <h1 style="font-size: 48px; color: var(--primary); margin-bottom: 30px; line-height: 1.2;">{{ category.title
+                }}</h1>
+
+            <div class="category-description" style="font-size: 18px; line-height: 1.6; color: var(--text-light);">
+                {% if category.description %}
+                {{ category.description|linebreaks }}
+                {% else %}
+                <p>Team description placeholder.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="team-members" style="padding: 60px 0; background: #f9fafb;">
+    <div class="container">
+        <h2 style="margin-bottom: 40px; color: var(--primary);">Команда мүшелері</h2>
+
+        <div class="team-list" style="display: flex; flex-direction: column; gap: 80px;">
+            {% for member in members %}
+            <div class="member-item"
+                style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 60px; align-items: start;">
+
+                <!-- Text Content (Left) -->
+                <div class="member-info" style="position: relative;">
+                    {% if user.is_staff %}
+                    <a href="{% url 'admin:content_teammember_change' member.id %}" class="admin-edit-btn"
+                        target="_blank" style="position: absolute; top: -10px; right: 0; z-index: 10;">✏️ Edit</a>
+                    {% endif %}
+
+                    <h3 style="margin: 0 0 10px; color: var(--dark); font-size: 36px; font-weight: 700;">{{ member.name
+                        }}</h3>
+                    <p
+                        style="color: var(--dark); font-weight: 700; margin-bottom: 30px; text-transform: uppercase; font-size: 18px;">
+                        {{ member.position }}</p>
+
+                    {% if member.description %}
+                    <div style="font-size: 16px; color: #333; line-height: 1.6; font-weight: 500;">
+                        {{ member.description|linebreaks }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Image (Right) -->
+                <div class="member-img-wrapper"
+                    style="width: 100%; aspect-ratio: 1/1; background: #eee; overflow: hidden; position: relative;">
+                    {% if member.image %}
+                    <img src="{{ member.image.url }}" alt="{{ member.name }}"
+                        style="width: 100%; height: 100%; object-fit: cover;">
+                    {% else %}
+                    <div style="width: 100%; height: 100%; background: #eee;"></div>
+                    {% endif %}
+                </div>
+
+            </div>
+            {% endfor %}
+
+            {% if user.is_staff %}
+            <div class="member-card add-new"
+                style="display: flex; align-items: center; justify-content: center; border: 2px dashed #ddd; background: transparent; min-height: 200px; border-radius: 15px;">
+                <a href="{% url 'admin:content_teammember_add' %}?category={{ category.id }}" target="_blank"
+                    style="text-decoration: none; color: #888; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                    <span style="font-size: 40px;">➕</span>
+                    <span>Add Member</span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="hero">
+    <div class="container hero-grid">
+        <div class="hero-text">
+            {% if user.is_staff %}
+            {% if hero_block %}
+            <a href="{% url 'admin:content_heroblock_change' hero_block.id %}" class="admin-edit-btn" target="_blank">✏️
+                Edit Hero</a>
+            {% else %}
+            <a href="{% url 'admin:content_heroblock_add' %}?title=Мектептегі оқу-тәрбие процестерін бізбен бірге реттеңіз&description=Qundylyq — «Білім-инновация» лицейлерінің табысты тәжірибесіне негізделген құндылыққа бағытталған білім беруді енгізуге көмектесеміз."
+                class="admin-edit-btn" target="_blank">➕ Create Hero (Edit Default)</a>
+            {% endif %}
+            {% endif %}
+            <div style="color: var(--accent); font-weight: 600; margin-bottom: 10px;">БІЛІМ БЕРУ ОРТАЛЫҒЫ</div>
+            <h1 class="hero-title">
+                {% if hero_block and hero_block.title %}
+                {{ hero_block.title }}
+                {% else %}
+                Мектептегі оқу-тәрбие процестерін бізбен бірге реттеңіз
+                {% endif %}
+            </h1>
+            <p class="hero-desc">
+                {% if hero_block and hero_block.description %}
+                {{ hero_block.description }}
+                {% else %}
+                Qundylyq — «Білім-инновация» лицейлерінің табысты тәжірибесіне негізделген құндылыққа бағытталған
+                білім беруді енгізуге көмектесеміз.
+                {% endif %}
+            </p>
+            <a href="#" class="btn btn-primary">Толығырақ білу</a>
+            <a href="#" class="btn btn-outline" style="margin-left: 10px;">Видео көру</a>
+        </div>
+        <div class="hero-img"
+            style="{% if hero_block and hero_block.image %}background-image: url('{{ hero_block.image.url }}'); background-size: cover; background-position: center;{% endif %}">
+            {% if user.is_staff %}
+            {% if hero_block %}
+            <a href="{% url 'admin:content_heroblock_change' hero_block.id %}" class="admin-edit-btn" target="_blank"
+                style="z-index: 10;">📷 Change Image</a>
+            {% else %}
+            <a href="{% url 'admin:content_heroblock_add' %}" class="admin-edit-btn" target="_blank"
+                style="z-index: 10;">➕ Add Image</a>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="stats">
+    <div class="container stats-grid">
+        <div class="stat-item">
+            <h3>+400</h3>
+            <p>Мектеп қосылды</p>
+        </div>
+        <div class="stat-item">
+            <h3>+10k</h3>
+            <p>Мұғалім оқытылды</p>
+        </div>
+        <div class="stat-item">
+            <h3>+2500</h3>
+            <p>Мастер-класстар</p>
+        </div>
+        <div class="stat-item">
+            <h3>95%</h3>
+            <p>Оң нәтижелер</p>
+        </div>
+    </div>
+</section>
+
+<section class="principles">
+    <div class="container">
+        <div class="section-header">
+            <h2>Біздің қағидаларымыз</h2>
+            <p>Адамгершілік, құрмет және жайлы білім беру ортасын қалыптастыру</p>
+        </div>
+        <div class="swiper principlesSwiper">
+            <div class="swiper-wrapper">
+                {% for principle in principles %}
+                <div class="swiper-slide card">
+                    {% if user.is_staff %}
+                    <a href="{% url 'admin:content_principleblock_change' principle.id %}" class="admin-edit-btn"
+                        target="_blank">✏️ Edit</a>
+                    {% endif %}
+                    <div class="icon-box"><i class="{{ principle.icon }}"></i></div>
+                    <h4>{{ principle.title }}</h4>
+                    <p style="color: #666;">{{ principle.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</section>
+
+<section class="projects">
+    <div class="container">
+        <div class="section-header">
+            <h2>Біздің Жобалар</h2>
+            <p>Авторлық курстар және әдістемелік құралдар</p>
+        </div>
+
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                {% for block in blocks %}
+                <div class="swiper-slide project-slide">
+                    {% if user.is_staff %}
+                    <a href="{% url 'admin:content_photoblock_change' block.id %}" class="admin-edit-btn"
+                        target="_blank">✏️ Edit</a>
+                    {% endif %}
+                    <div class="slide-img"
+                        style="background-image: url('{{ block.image.url }}'); background-size: cover; background-position: center;">
+                    </div>
+                    <div class="slide-content">
+                        {% if block.tag %}
+                        <span class="slide-tag">{{ block.tag }}</span>
+                        {% endif %}
+                        <h3 class="slide-title">{{ block.title }}</h3>
+                        <p class="slide-desc">{{ block.description }}</p>
+                        {% if block.link %}
+                        <a href="{{ block.link }}" class="slide-link">Толығырақ &rarr;</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</section>
+
+<section class="team" style="padding: 100px 0; background: #fff;">
+    <div class="container">
+        <div class="section-header">
+            <h2>QUNDYLYQ КОМАНДАСЫ</h2>
+            <p>Біздің кәсіби мамандар</p>
+        </div>
+        <div class="team-grid"
+            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; margin-top: 50px;">
+            {% for category in team_categories %}
+            <div class="team-category-card"
+                style="position: relative; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); text-align: center; transition: transform 0.3s ease;">
+                {% if user.is_staff %}
+                <a href="{% url 'admin:content_teamcategory_change' category.id %}" class="admin-edit-btn"
+                    target="_blank" style="z-index: 10;">✏️ Edit</a>
+                {% endif %}
+
+                <a href="{% url 'team_detail' category.id %}"
+                    style="text-decoration: none; color: inherit; display: block;">
+                    <div
+                        style="width: 100%; height: 200px; margin: 0 auto 20px; background: #f0f4f8; border-radius: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                        {% if category.image %}
+                        <img src="{{ category.image.url }}" alt="{{ category.title }}"
+                            style="width: 100%; height: 100%; object-fit: cover;">
+                        {% else %}
+                        <span style="font-size: 30px; color: var(--primary);">👥</span>
+                        {% endif %}
+                    </div>
+                    <h3 style="margin: 0; font-size: 18px; color: var(--dark);">{{ category.title }}</h3>
+                </a>
+            </div>
+            {% endfor %}
+
+            {% if user.is_staff %}
+            <div class="team-category-card add-new"
+                style="display: flex; align-items: center; justify-content: center; border: 2px dashed #ddd; background: transparent; min-height: 200px; border-radius: 15px;">
+                <a href="{% url 'admin:content_teamcategory_add' %}" target="_blank"
+                    style="text-decoration: none; color: #888; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                    <span style="font-size: 40px;">➕</span>
+                    <span>Add Category</span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    var swiper = new Swiper(".mySwiper", {
+        slidesPerView: 1,
+        spaceBetween: 30,
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        breakpoints: {
+            640: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
+        },
+    });
+
+    var principlesSwiper = new Swiper(".principlesSwiper", {
+        slidesPerView: 1,
+        spaceBetween: 30,
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        breakpoints: {
+            640: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
+        },
+    });
+</script>
+{% endblock %}
