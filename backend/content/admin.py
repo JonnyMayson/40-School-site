@@ -10,7 +10,7 @@ class PhotoBlockAdmin(admin.ModelAdmin):
 
     def preview_image(self, obj):
         if obj.image:
-            return format_html('<img src="{}" style="max-height: 50px;"/>', obj.image.url)
+            return format_html('<img src="{}" style="max-height: 50px;"/>', obj.image)
         return "-"
 
 @admin.register(HeroBlock)
@@ -21,7 +21,7 @@ class HeroBlockAdmin(admin.ModelAdmin):
 
     def preview_image(self, obj):
         if obj.image:
-            return format_html('<img src="{}" style="max-height: 50px;"/>', obj.image.url)
+            return format_html('<img src="{}" style="max-height: 50px;"/>', obj.image)
         return "-"
 
 @admin.register(PrincipleBlock)
@@ -37,7 +37,7 @@ class TeamCategoryAdmin(admin.ModelAdmin):
 
     def preview_image(self, obj):
         if obj.image:
-            return format_html('<img src="{}" style="max-height: 50px;"/>', obj.image.url)
+            return format_html('<img src="{}" style="max-height: 50px;"/>', obj.image)
         return "-"
 
 @admin.register(TeamMember)
@@ -54,5 +54,6 @@ class NewsArticleAdmin(admin.ModelAdmin):
     readonly_fields = ('preview_image',)
 
     def preview_image(self, obj):
-        if obj.image:
-            return format_html('<img src="{}" style="max-height: 50px;"/>', obj.image.url)
+        if obj.card_image:
+            return format_html('<img src="{}" style="max-height: 50px;"/>', obj.card_image)
+        return "-"

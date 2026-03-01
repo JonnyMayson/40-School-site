@@ -1,5 +1,42 @@
 from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.contrib.admin.views.decorators import staff_member_required
 from .models import PhotoBlock, HeroBlock, PrincipleBlock, TeamCategory, TeamMember, NewsArticle
+
+ALLOWED_MODELS = {
+    'heroblock': (HeroBlock, ['image']),
+    'photoblock': (PhotoBlock, ['image']),
+    'teamcategory': (TeamCategory, ['image']),
+    'teammember': (TeamMember, ['image']),
+    'newsarticle': (NewsArticle, ['card_image']),
+}
+
+@staff_member_required
+@require_POST
+def update_image_url(request):
+    model_name = request.POST.get('model', '').lower()
+    object_id  = request.POST.get('object_id')
+    field_name = request.POST.get('field')
+    url        = request.POST.get('url', '').strip()
+
+    if model_name not in ALLOWED_MODELS:
+        return JsonResponse({'error': 'Unknown model'}, status=400)
+
+    model_class, allowed_fields = ALLOWED_MODELS[model_name]
+    if field_name not in allowed_fields:
+        return JsonResponse({'error': 'Field not allowed'}, status=400)
+
+    if not url.startswith('http'):
+        return JsonResponse({'error': 'Invalid URL'}, status=400)
+
+    try:
+        obj = model_class.objects.get(pk=object_id)
+        setattr(obj, field_name, url)
+        obj.save(update_fields=[field_name])
+        return JsonResponse({'success': True, 'url': url})
+    except model_class.DoesNotExist:
+        return JsonResponse({'error': 'Object not found'}, status=404)
 
 def index(request):
     blocks = PhotoBlock.objects.all().order_by('order')  # Fetch all blocks ordered by 'order'

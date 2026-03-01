@@ -543,6 +543,227 @@
         </div>
     </footer>
 
+    {% if user.is_staff %}
+    <!-- ===== ImgBB Upload Modal ===== -->
+    <div id="imgbb-modal"
+        style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); align-items:center; justify-content:center;">
+        <div
+            style="background:#fff; border-radius:20px; padding:40px; width:520px; max-width:95vw; box-shadow:0 25px 60px rgba(0,0,0,0.3); position:relative; animation: modalIn 0.25s ease;">
+            <style>
+                @keyframes modalIn {
+                    from {
+                        transform: scale(0.92);
+                        opacity: 0;
+                    }
+
+                    to {
+                        transform: scale(1);
+                        opacity: 1;
+                    }
+                }
+
+                #imgbb-dropzone {
+                    border: 2.5px dashed #2e90fa;
+                    border-radius: 14px;
+                    padding: 50px 30px;
+                    text-align: center;
+                    cursor: pointer;
+                    transition: 0.2s;
+                    background: #f5fbff;
+                }
+
+                #imgbb-dropzone.drag-over {
+                    background: #e0f2fe;
+                    border-color: #0369a1;
+                }
+
+                #imgbb-dropzone:hover {
+                    background: #e8f5ff;
+                }
+
+                #imgbb-preview {
+                    max-width: 100%;
+                    max-height: 200px;
+                    border-radius: 10px;
+                    margin-top: 15px;
+                    display: none;
+                }
+
+                #imgbb-status {
+                    margin-top: 15px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    text-align: center;
+                    min-height: 22px;
+                }
+
+                .imgbb-spinner {
+                    display: inline-block;
+                    width: 18px;
+                    height: 18px;
+                    border: 3px solid #ddd;
+                    border-top-color: #2e90fa;
+                    border-radius: 50%;
+                    animation: spin 0.7s linear infinite;
+                    vertical-align: middle;
+                    margin-right: 6px;
+                }
+
+                @keyframes spin {
+                    to {
+                        transform: rotate(360deg);
+                    }
+                }
+
+                #imgbb-close-btn {
+                    position: absolute;
+                    top: 15px;
+                    right: 20px;
+                    background: none;
+                    border: none;
+                    font-size: 22px;
+                    cursor: pointer;
+                    color: #888;
+                }
+
+                #imgbb-close-btn:hover {
+                    color: #000;
+                }
+
+                #imgbb-upload-btn {
+                    margin-top: 18px;
+                    width: 100%;
+                    padding: 14px;
+                    background: #2e90fa;
+                    color: #fff;
+                    border: none;
+                    border-radius: 10px;
+                    font-size: 15px;
+                    font-weight: 700;
+                    cursor: pointer;
+                    transition: 0.2s;
+                }
+
+                #imgbb-upload-btn:hover {
+                    background: #1c7ed6;
+                }
+
+                #imgbb-upload-btn:disabled {
+                    background: #93c5fd;
+                    cursor: not-allowed;
+                }
+            </style>
+
+            <button id="imgbb-close-btn" onclick="closeImageUpload()">✕</button>
+            <h3 style="margin:0 0 6px; color:#003366; font-size:20px;">📷 Сурет жүктеу</h3>
+            <p style="color:#667085; font-size:13px; margin:0 0 20px;">Файлды жылжытып апарыңыз немесе таңдаңыз</p>
+
+            <div id="imgbb-dropzone" onclick="document.getElementById('imgbb-file-input').click()">
+                <div style="font-size:48px; margin-bottom:10px;">🖼️</div>
+                <div style="font-weight:600; color:#003366; margin-bottom:5px;">Drag & Drop</div>
+                <div style="color:#888; font-size:13px;">немесе басу арқылы файл таңдаңыз (JPG, PNG, WEBP)</div>
+                <img id="imgbb-preview" src="" alt="preview">
+            </div>
+            <input type="file" id="imgbb-file-input" accept="image/*" style="display:none;">
+
+            <div id="imgbb-status"></div>
+            <button id="imgbb-upload-btn" disabled onclick="doImgBBUpload()">Жүктеу</button>
+        </div>
+    </div>
+
+    <script>
+        const IMGBB_KEY = 'f58c330eb3fdf17c0ea4a386392928d7';
+        const CSRF_TOKEN = '{{ csrf_token }}';
+        let _imgUploadMeta = {};
+        let _selectedFile = null;
+
+        function openImageUpload(model, objectId, field) {
+            _imgUploadMeta = { model, objectId, field };
+            _selectedFile = null;
+            document.getElementById('imgbb-status').textContent = '';
+            document.getElementById('imgbb-preview').style.display = 'none';
+            document.getElementById('imgbb-upload-btn').disabled = true;
+            document.getElementById('imgbb-file-input').value = '';
+            const modal = document.getElementById('imgbb-modal');
+            modal.style.display = 'flex';
+        }
+
+        function closeImageUpload() {
+            document.getElementById('imgbb-modal').style.display = 'none';
+        }
+
+        // Close on backdrop click
+        document.getElementById('imgbb-modal').addEventListener('click', function (e) {
+            if (e.target === this) closeImageUpload();
+        });
+
+        // File input
+        document.getElementById('imgbb-file-input').addEventListener('change', function () {
+            if (this.files[0]) setFile(this.files[0]);
+        });
+
+        // Drag and drop
+        const dz = document.getElementById('imgbb-dropzone');
+        dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+        dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+        dz.addEventListener('drop', e => {
+            e.preventDefault();
+            dz.classList.remove('drag-over');
+            if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
+        });
+
+        function setFile(file) {
+            _selectedFile = file;
+            const reader = new FileReader();
+            reader.onload = e => {
+                const preview = document.getElementById('imgbb-preview');
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+            document.getElementById('imgbb-status').textContent = '✅ ' + file.name;
+            document.getElementById('imgbb-upload-btn').disabled = false;
+        }
+
+        async function doImgBBUpload() {
+            if (!_selectedFile) return;
+            const btn = document.getElementById('imgbb-upload-btn');
+            const status = document.getElementById('imgbb-status');
+            btn.disabled = true;
+            status.innerHTML = '<span class="imgbb-spinner"></span> ImgBB-ге жүктелуде...';
+
+            try {
+                const fd = new FormData();
+                fd.append('image', _selectedFile);
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: fd });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error?.message || 'ImgBB error');
+
+                const imageUrl = data.data.url;
+                status.innerHTML = '<span class="imgbb-spinner"></span> Деректер базасына сақталуда...';
+
+                const formData = new FormData();
+                formData.append('model', _imgUploadMeta.model);
+                formData.append('object_id', _imgUploadMeta.objectId);
+                formData.append('field', _imgUploadMeta.field);
+                formData.append('url', imageUrl);
+                formData.append('csrfmiddlewaretoken', CSRF_TOKEN);
+
+                const saveRes = await fetch('/api/update-image/', { method: 'POST', body: formData });
+                const saveData = await saveRes.json();
+                if (!saveData.success) throw new Error(saveData.error || 'Save error');
+
+                status.innerHTML = '✅ Сурет сәтті жүктелді! Бет жаңартылуда...';
+                setTimeout(() => { closeImageUpload(); window.location.reload(); }, 1200);
+
+            } catch (err) {
+                status.innerHTML = '❌ Қате: ' + err.message;
+                btn.disabled = false;
+            }
+        }
+    </script>
+    {% endif %}
+
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {

@@ -33,15 +33,16 @@
             <a href="#" class="btn btn-primary">Толығырақ білу</a>
             <a href="#" class="btn btn-outline" style="margin-left: 10px;">Видео көру</a>
         </div>
-        <div class="hero-img"
-            style="{% if hero_block and hero_block.image %}background-image: url('{{ hero_block.image.url }}'); background-size: cover; background-position: center;{% endif %}">
+        <div class="hero-img" id="hero-img-container"
+            style="{% if hero_block and hero_block.image %}background-image: url('{{ hero_block.image }}'); background-size: cover; background-position: center;{% endif %}">
             {% if user.is_staff %}
             {% if hero_block %}
-            <a href="{% url 'admin:content_heroblock_change' hero_block.id %}" class="admin-edit-btn" target="_blank"
-                style="z-index: 10;">📷 Change Image</a>
+            <button class="admin-edit-btn" style="z-index:10;"
+                onclick="openImageUpload('heroblock','{{ hero_block.id }}','image')">📷 Upload Image</button>
+            <a href="{% url 'admin:content_heroblock_change' hero_block.id %}" class="admin-edit-btn"
+                style="z-index:10; top:40px;">✏️ Edit</a>
             {% else %}
-            <a href="{% url 'admin:content_heroblock_add' %}" class="admin-edit-btn" target="_blank"
-                style="z-index: 10;">➕ Add Image</a>
+            <a href="{% url 'admin:content_heroblock_add' %}" class="admin-edit-btn" style="z-index:10;">➕ Add Hero</a>
             {% endif %}
             {% endif %}
         </div>
@@ -106,11 +107,13 @@
                 {% for block in blocks %}
                 <div class="swiper-slide project-slide">
                     {% if user.is_staff %}
+                    <button class="admin-edit-btn" onclick="openImageUpload('photoblock','{{ block.id }}','image')">📷
+                        Upload Image</button>
                     <a href="{% url 'admin:content_photoblock_change' block.id %}" class="admin-edit-btn"
-                        target="_blank">✏️ Edit</a>
+                        style="top:40px;" target="_blank">✏️ Edit</a>
                     {% endif %}
                     <div class="slide-img"
-                        style="background-image: url('{{ block.image.url }}'); background-size: cover; background-position: center;">
+                        style="background-image: url('{{ block.image }}'); background-size: cover; background-position: center;">
                     </div>
                     <div class="slide-content">
                         {% if block.tag %}
@@ -142,8 +145,10 @@
             <div class="team-category-card"
                 style="position: relative; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); text-align: center; transition: transform 0.3s ease;">
                 {% if user.is_staff %}
+                <button class="admin-edit-btn" style="z-index:10;"
+                    onclick="openImageUpload('teamcategory','{{ category.id }}','image')">📷 Upload Image</button>
                 <a href="{% url 'admin:content_teamcategory_change' category.id %}" class="admin-edit-btn"
-                    target="_blank" style="z-index: 10;">✏️ Edit</a>
+                    style="z-index:10; top:40px;" target="_blank">✏️ Edit</a>
                 {% endif %}
 
                 <a href="{% url 'team_detail' category.id %}"
@@ -151,7 +156,7 @@
                     <div
                         style="width: 100%; height: 200px; margin: 0 auto 20px; background: #f0f4f8; border-radius: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
                         {% if category.image %}
-                        <img src="{{ category.image.url }}" alt="{{ category.title }}"
+                        <img src="{{ category.image }}" alt="{{ category.title }}"
                             style="width: 100%; height: 100%; object-fit: cover;">
                         {% else %}
                         <span style="font-size: 30px; color: var(--primary);">👥</span>

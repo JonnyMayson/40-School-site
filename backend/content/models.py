@@ -3,7 +3,7 @@ from django.db import models
 class PhotoBlock(models.Model):
     title = models.CharField(max_length=200, verbose_name="Тақырып / Заголовок")
     description = models.TextField(verbose_name="Сипаттама / Описание")
-    image = models.ImageField(upload_to='blocks/', verbose_name="Сурет / Изображение")
+    image = models.URLField(verbose_name="Сурет URL / URL изображения")
     tag = models.CharField(max_length=100, blank=True, null=True, verbose_name="Тег / Тэг")
     link = models.URLField(blank=True, null=True, verbose_name="Сілтеме / Ссылка")
     order = models.IntegerField(default=0, verbose_name="Реттік нөмірі / Порядок")
@@ -19,7 +19,7 @@ class PhotoBlock(models.Model):
 class HeroBlock(models.Model):
     title = models.CharField(max_length=200, blank=True, null=True, verbose_name="Тақырып / Заголовок (опционально)")
     description = models.TextField(blank=True, null=True, verbose_name="Сипаттама / Описание (опционально)")
-    image = models.ImageField(upload_to='hero/', verbose_name="Басты сурет / Главное изображение")
+    image = models.URLField(verbose_name="Басты сурет URL / URL главного изображения")
     is_active = models.BooleanField(default=False, verbose_name="Белсенді / Активен")
 
     def __str__(self):
@@ -45,7 +45,7 @@ class PrincipleBlock(models.Model):
 
 class TeamCategory(models.Model):
     title = models.CharField(max_length=200, verbose_name="Команда аты / Название команды")
-    image = models.ImageField(upload_to='team_categories/', verbose_name="Сурет / Изображение", blank=True, null=True)
+    image = models.URLField(verbose_name="Сурет URL / URL изображения", blank=True, null=True)
     description = models.TextField(verbose_name="Сипаттама / Описание", blank=True, null=True)
     order = models.IntegerField(default=0, verbose_name="Реттік нөмірі / Порядок")
 
@@ -62,7 +62,7 @@ class TeamMember(models.Model):
     name = models.CharField(max_length=100, verbose_name="Аты-жөні / ФИО")
     position = models.CharField(max_length=100, verbose_name="Лауазымы / Должность")
     description = models.TextField(verbose_name="Сипаттама / Описание", blank=True, null=True)
-    image = models.ImageField(upload_to='team/', verbose_name="Фото")
+    image = models.URLField(verbose_name="Фото URL")
     order = models.IntegerField(default=0, verbose_name="Реттік нөмірі / Порядок")
 
     def __str__(self):
@@ -79,7 +79,7 @@ class NewsArticle(models.Model):
     title = models.CharField(max_length=200, verbose_name="Тақырып (Title)")
     subtitle = models.CharField(max_length=100, verbose_name="Подзаголовок/Тег (Subtitle/Tag)", help_text="Мысалы: #Мақала")
     short_description = models.TextField(verbose_name="Қысқаша сипаттама (Short Description)", help_text="Карточкада көрсетілетін қысқа мәтін")
-    card_image = models.ImageField(upload_to='news_images/', verbose_name="Карточка суреті (Card Image)")
+    card_image = models.URLField(verbose_name="Карточка суреті URL (Card Image URL)")
     publish_date = models.DateField(default=timezone.now, verbose_name="Жарияланған күні (Publish Date)")
     full_content = models.TextField(verbose_name="Толық мазмұны (Full Content)", help_text="Мақаланың негізгі мәтіні")
     is_published = models.BooleanField(default=True, verbose_name="Жариялау (Is Published)")

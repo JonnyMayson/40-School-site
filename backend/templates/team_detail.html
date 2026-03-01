@@ -7,13 +7,15 @@
         <!-- Left: Category Image -->
         <div class="category-image-wrapper" style="position: relative;">
             {% if user.is_staff %}
-            <a href="{% url 'admin:content_teamcategory_change' category.id %}" class="admin-edit-btn" target="_blank"
-                style="z-index: 10;">📷 Change Image</a>
+            <button class="admin-edit-btn" style="z-index:10;"
+                onclick="openImageUpload('teamcategory','{{ category.id }}','image')">📷 Upload Image</button>
+            <a href="{% url 'admin:content_teamcategory_change' category.id %}" class="admin-edit-btn"
+                style="z-index:10; top:40px;" target="_blank">✏️ Edit</a>
             {% endif %}
 
             <div style="width: 100%; height: 400px; background: #eee; border-radius: 20px; overflow: hidden;">
                 {% if category.image %}
-                <img src="{{ category.image.url }}" alt="{{ category.title }}"
+                <img src="{{ category.image }}" alt="{{ category.title }}"
                     style="width: 100%; height: 100%; object-fit: cover;">
                 {% else %}
                 <div
@@ -78,8 +80,12 @@
                 <!-- Image (Right) -->
                 <div class="member-img-wrapper"
                     style="width: 100%; aspect-ratio: 1/1; background: #eee; overflow: hidden; position: relative;">
+                    {% if user.is_staff %}
+                    <button class="admin-edit-btn" style="z-index:10;"
+                        onclick="openImageUpload('teammember','{{ member.id }}','image')">📷 Upload Image</button>
+                    {% endif %}
                     {% if member.image %}
-                    <img src="{{ member.image.url }}" alt="{{ member.name }}"
+                    <img src="{{ member.image }}" alt="{{ member.name }}"
                         style="width: 100%; height: 100%; object-fit: cover;">
                     {% else %}
                     <div style="width: 100%; height: 100%; background: #eee;"></div>

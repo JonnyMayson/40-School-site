@@ -27,4 +27,5 @@ urlpatterns = [
     path('team/<int:category_id>/', views.team_detail, name='team_detail'),
     path('news/', views.news_list, name='news_list'),
     path('news/<int:news_id>/', views.news_detail, name='news_detail'),
+    path('api/update-image/', views.update_image_url, name='update_image_url'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -9,10 +9,12 @@
 
         <div class="news-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px;">
             {% for news in news_items %}
-            <div style="position: relative; group">
+            <div style="position: relative;">
                 {% if user.is_staff %}
+                <button class="admin-edit-btn" style="position:absolute; top:10px; right:10px; z-index:10;"
+                    onclick="openImageUpload('newsarticle','{{ news.id }}','card_image')">📷 Upload Image</button>
                 <a href="{% url 'admin:content_newsarticle_change' news.id %}" class="admin-edit-btn" target="_blank"
-                    style="position: absolute; top: 10px; right: 10px; z-index: 10;">✏️ Edit</a>
+                    style="position: absolute; top: 40px; right: 10px; z-index: 10;">✏️ Edit</a>
                 {% endif %}
 
                 <a href="{% url 'news_detail' news.id %}" class="news-card"
@@ -20,7 +22,7 @@
                     <div class="news-img-wrapper"
                         style="width: 100%; height: 250px; background: #eee; border-radius: 20px; overflow: hidden; margin-bottom: 20px;">
                         {% if news.card_image %}
-                        <img src="{{ news.card_image.url }}" alt="{{ news.title }}"
+                        <img src="{{ news.card_image }}" alt="{{ news.title }}"
                             style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
                         {% else %}
                         <div
