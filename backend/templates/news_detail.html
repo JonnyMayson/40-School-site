@@ -36,6 +36,11 @@
             {% if user.is_staff %}
             <button class="admin-edit-btn" style="z-index:10;"
                 onclick="openImageUpload('newsarticle','{{ news_item.id }}','card_image')">📷 Upload Image</button>
+            {% if news_item.card_image %}
+            <button onclick="removeImage('newsarticle','{{ news_item.id }}','card_image')"
+                style="position:absolute;top:8px;left:8px;z-index:20;background:rgba(220,38,38,0.85);color:#fff;border:none;border-radius:50%;width:28px;height:28px;font-size:16px;cursor:pointer;line-height:1;"
+                title="Суретті жою">&#x2715;</button>
+            {% endif %}
             {% endif %}
             {% if news_item.card_image %}
             <img src="{{ news_item.card_image }}" alt="{{ news_item.title }}"

@@ -8,6 +8,9 @@
             {% if user.is_staff %}
             <button class="admin-edit-btn" style="z-index:10;" onclick="openImageUpload('teamcategory','{{ category.id }}','image')">Upload Image</button>
             <a href="{% url 'admin:content_teamcategory_change' category.id %}" class="admin-edit-btn" style="z-index:10; top:40px;" target="_blank">Edit</a>
+            {% if category.image %}
+            <button onclick="removeImage('teamcategory','{{ category.id }}','image')" style="position:absolute;top:8px;left:8px;z-index:20;background:rgba(220,38,38,0.85);color:#fff;border:none;border-radius:50%;width:28px;height:28px;font-size:16px;cursor:pointer;line-height:1;" title="Суретті жою">&#x2715;</button>
+            {% endif %}
             {% endif %}
             <div style="width: 100%; height: 400px; background: #eee; border-radius: 20px; overflow: hidden;">
                 {% if category.image %}
@@ -53,6 +56,9 @@
                 <div class="member-img-wrapper" style="width: 100%; aspect-ratio: 1/1; background: #eee; overflow: hidden; position: relative;">
                     {% if user.is_staff %}
                     <button class="admin-edit-btn" style="z-index:10;" onclick="openImageUpload('teammember','{{ member.id }}','image')">Upload Image</button>
+                    {% if member.image %}
+                    <button onclick="removeImage('teammember','{{ member.id }}','image')" style="position:absolute;top:8px;left:8px;z-index:20;background:rgba(220,38,38,0.85);color:#fff;border:none;border-radius:50%;width:28px;height:28px;font-size:16px;cursor:pointer;line-height:1;" title="Суретті жою">&#x2715;</button>
+                    {% endif %}
                     {% endif %}
                     {% if member.image %}
                     <img src="{{ member.image }}" alt="{{ member.name }}" style="width: 100%; height: 100%; object-fit: cover;">

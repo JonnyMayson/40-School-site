@@ -48,6 +48,29 @@ def create_hero_block(request):
     hero = HeroBlock.objects.create(image=url, is_active=True)
     return JsonResponse({'success': True, 'id': hero.id, 'url': url})
 
+@staff_member_required
+@require_POST
+def clear_image_url(request):
+    """Clear the image URL for a model field (set to empty string)."""
+    model_name = request.POST.get('model', '').lower()
+    object_id  = request.POST.get('object_id')
+    field_name = request.POST.get('field')
+
+    if model_name not in ALLOWED_MODELS:
+        return JsonResponse({'error': 'Unknown model'}, status=400)
+
+    model_class, allowed_fields = ALLOWED_MODELS[model_name]
+    if field_name not in allowed_fields:
+        return JsonResponse({'error': 'Field not allowed'}, status=400)
+
+    try:
+        obj = model_class.objects.get(pk=object_id)
+        setattr(obj, field_name, '')
+        obj.save(update_fields=[field_name])
+        return JsonResponse({'success': True})
+    except model_class.DoesNotExist:
+        return JsonResponse({'error': 'Object not found'}, status=404)
+
 def index(request):
     blocks = PhotoBlock.objects.all().order_by('order')  # Fetch all blocks ordered by 'order'
     

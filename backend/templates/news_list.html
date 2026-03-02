@@ -15,6 +15,11 @@
                     onclick="openImageUpload('newsarticle','{{ news.id }}','card_image')">📷 Upload Image</button>
                 <a href="{% url 'admin:content_newsarticle_change' news.id %}" class="admin-edit-btn" target="_blank"
                     style="position: absolute; top: 40px; right: 10px; z-index: 10;">✏️ Edit</a>
+                {% if news.card_image %}
+                <button onclick="removeImage('newsarticle','{{ news.id }}','card_image')"
+                    style="position:absolute;top:8px;left:8px;z-index:20;background:rgba(220,38,38,0.85);color:#fff;border:none;border-radius:50%;width:28px;height:28px;font-size:16px;cursor:pointer;line-height:1;"
+                    title="Суретті жою">&#x2715;</button>
+                {% endif %}
                 {% endif %}
 
                 <a href="{% url 'news_detail' news.id %}" class="news-card"

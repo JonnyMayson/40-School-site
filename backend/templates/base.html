@@ -762,6 +762,21 @@
             }
         }
 
+        async function removeImage(model, objectId, field) {
+            if (!confirm('Суретті жою керек пе?')) return;
+            try {
+                const fd = new FormData();
+                fd.append('model', model);
+                fd.append('object_id', objectId);
+                fd.append('field', field);
+                fd.append('csrfmiddlewaretoken', CSRF_TOKEN);
+                const res = await fetch('/api/clear-image/', { method: 'POST', body: fd });
+                const data = await res.json();
+                if (data.success) { window.location.reload(); }
+                else { alert('Қате: ' + (data.error || 'Unknown error')); }
+            } catch (e) { alert('Қате: ' + e.message); }
+        }
+
         // Special flow: create a new HeroBlock when none exists
         function openImageUploadCreateHero() {
             _imgUploadMeta = { mode: 'create_hero' };
