@@ -761,6 +761,53 @@
                 btn.disabled = false;
             }
         }
+
+        // Special flow: create a new HeroBlock when none exists
+        function openImageUploadCreateHero() {
+            _imgUploadMeta = { mode: 'create_hero' };
+            _selectedFile = null;
+            document.getElementById('imgbb-status').textContent = '';
+            document.getElementById('imgbb-preview').style.display = 'none';
+            document.getElementById('imgbb-upload-btn').disabled = true;
+            document.getElementById('imgbb-file-input').value = '';
+            // Override upload button to use hero creation flow
+            document.getElementById('imgbb-upload-btn').onclick = doImgBBCreateHero;
+            document.getElementById('imgbb-modal').style.display = 'flex';
+        }
+
+        async function doImgBBCreateHero() {
+            if (!_selectedFile) return;
+            const btn = document.getElementById('imgbb-upload-btn');
+            const status = document.getElementById('imgbb-status');
+            btn.disabled = true;
+            status.innerHTML = '<span class="imgbb-spinner"></span> ImgBB-ге жүктелуде...';
+
+            try {
+                const fd = new FormData();
+                fd.append('image', _selectedFile);
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: fd });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error?.message || 'ImgBB error');
+
+                const imageUrl = data.data.url;
+                status.innerHTML = '<span class="imgbb-spinner"></span> Hero блок жасалуда...';
+
+                const formData = new FormData();
+                formData.append('url', imageUrl);
+                formData.append('csrfmiddlewaretoken', CSRF_TOKEN);
+
+                const saveRes = await fetch('/api/create-hero/', { method: 'POST', body: formData });
+                const saveData = await saveRes.json();
+                if (!saveData.success) throw new Error(saveData.error || 'Save error');
+
+                status.innerHTML = '✅ Сурет сәтті жүктелді! Бет жаңартылуда...';
+                setTimeout(() => { closeImageUpload(); window.location.reload(); }, 1200);
+
+            } catch (err) {
+                status.innerHTML = '❌ Қате: ' + err.message;
+                btn.disabled = false;
+            }
+        }
     </script>
     {% endif %}
 

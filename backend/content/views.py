@@ -38,6 +38,16 @@ def update_image_url(request):
     except model_class.DoesNotExist:
         return JsonResponse({'error': 'Object not found'}, status=404)
 
+@staff_member_required
+@require_POST
+def create_hero_block(request):
+    """Create a new HeroBlock with the given image URL (used when no hero exists)."""
+    url = request.POST.get('url', '').strip()
+    if not url.startswith('http'):
+        return JsonResponse({'error': 'Invalid URL'}, status=400)
+    hero = HeroBlock.objects.create(image=url, is_active=True)
+    return JsonResponse({'success': True, 'id': hero.id, 'url': url})
+
 def index(request):
     blocks = PhotoBlock.objects.all().order_by('order')  # Fetch all blocks ordered by 'order'
     
