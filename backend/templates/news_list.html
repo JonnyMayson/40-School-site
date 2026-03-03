@@ -11,15 +11,16 @@
             {% for news in news_items %}
             <div style="position: relative;">
                 {% if user.is_staff %}
-                <button class="admin-edit-btn" style="position:absolute; top:10px; right:10px; z-index:10;"
-                    onclick="openImageUpload('newsarticle','{{ news.id }}','card_image')">📷 Upload Image</button>
-                <a href="{% url 'admin:content_newsarticle_change' news.id %}" class="admin-edit-btn" target="_blank"
-                    style="position: absolute; top: 40px; right: 10px; z-index: 10;">✏️ Edit</a>
-                {% if news.card_image %}
-                <button onclick="removeImage('newsarticle','{{ news.id }}','card_image')"
-                    style="position:absolute;top:8px;left:8px;z-index:20;background:rgba(220,38,38,0.85);color:#fff;border:none;border-radius:50%;width:28px;height:28px;font-size:16px;cursor:pointer;line-height:1;"
-                    title="Суретті жою">&#x2715;</button>
-                {% endif %}
+                <div class="admin-tools">
+                    <button type="button" class="admin-action"
+                        onclick="openImageUpload('newsarticle','{{ news.id }}','card_image')">📷 Upload</button>
+                    <a href="{% url 'admin:content_newsarticle_change' news.id %}" class="admin-action"
+                        target="_blank">✏️ Edit</a>
+                    {% if news.card_image %}
+                    <button type="button" class="admin-action admin-action-danger"
+                        onclick="removeImage('newsarticle','{{ news.id }}','card_image')" title="Суретті жою">&#x2715;</button>
+                    {% endif %}
+                </div>
                 {% endif %}
 
                 <a href="{% url 'news_detail' news.id %}" class="news-card"
@@ -30,9 +31,7 @@
                         <img src="{{ news.card_image_url }}" alt="{{ news.title }}"
                             style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
                         {% else %}
-                        <div
-                            style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #aaa;">
-                            No Image</div>
+                        <div class="empty-state">Жаңалық суреті жоқ</div>
                         {% endif %}
                     </div>
 

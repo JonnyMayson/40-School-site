@@ -33,23 +33,23 @@
             <a href="#" class="btn btn-primary">Толығырақ білу</a>
             <a href="#" class="btn btn-outline" style="margin-left: 10px;">Видео көру</a>
         </div>
-        <div class="hero-img" id="hero-img-container"
+        <div class="hero-img{% if hero_block and hero_block.image_url %} has-image{% endif %}" id="hero-img-container"
             style="{% if hero_block and hero_block.image_url %}background-image: url('{{ hero_block.image_url }}'); background-size: cover; background-position: center;{% endif %}">
             {% if user.is_staff %}
             {% if hero_block %}
-            <button class="admin-edit-btn" style="z-index:10;"
-                onclick="openImageUpload('heroblock','{{ hero_block.id }}','image')">📷 Upload Image</button>
-            <a href="{% url 'admin:content_heroblock_change' hero_block.id %}" class="admin-edit-btn"
-                style="z-index:10; top:40px;">✏️ Edit</a>
-            {% if hero_block.image %}
-            <button onclick="removeImage('heroblock','{{ hero_block.id }}','image')"
-                style="position:absolute;top:8px;left:8px;z-index:20;background:rgba(220,38,38,0.85);color:#fff;border:none;border-radius:50%;width:28px;height:28px;font-size:16px;cursor:pointer;line-height:1;"
-                title="Суретті жою">&#x2715;</button>
-            {% endif %}
+            <div class="admin-tools">
+                <button type="button" class="admin-action"
+                    onclick="openImageUpload('heroblock','{{ hero_block.id }}','image')">📷 Upload</button>
+                <a href="{% url 'admin:content_heroblock_change' hero_block.id %}" class="admin-action">✏️ Edit</a>
+                {% if hero_block.image %}
+                <button type="button" class="admin-action admin-action-danger"
+                    onclick="removeImage('heroblock','{{ hero_block.id }}','image')" title="Суретті жою">&#x2715;</button>
+                {% endif %}
+            </div>
             {% else %}
-            <button class="admin-edit-btn"
-                style="z-index:10; top:50%; left:50%; transform:translate(-50%,-50%); position:absolute; font-size:14px; padding:10px 18px;"
-                onclick="openImageUploadCreateHero()">📷 Upload Image</button>
+            <div class="admin-tools" style="top:50%;left:50%;right:auto;transform:translate(-50%,-50%);">
+                <button type="button" class="admin-action" onclick="openImageUploadCreateHero()">📷 Upload Hero</button>
+            </div>
             {% endif %}
             {% endif %}
         </div>
@@ -114,13 +114,18 @@
                 {% for block in blocks %}
                 <div class="swiper-slide project-slide">
                     {% if user.is_staff %}
-                    <button class="admin-edit-btn" onclick="openImageUpload('photoblock','{{ block.id }}','image')">📷
-                        Upload Image</button>
-                    <a href="{% url 'admin:content_photoblock_change' block.id %}" class="admin-edit-btn"
-                        style="top:40px;" target="_blank">✏️ Edit</a>
+                    <div class="admin-tools">
+                        <button type="button" class="admin-action"
+                            onclick="openImageUpload('photoblock','{{ block.id }}','image')">📷 Upload</button>
+                        <a href="{% url 'admin:content_photoblock_change' block.id %}" class="admin-action"
+                            target="_blank">✏️ Edit</a>
+                    </div>
                     {% endif %}
                     <div class="slide-img"
                         style="background-image: url('{% if block.image_url %}{{ block.image_url }}{% endif %}'); background-size: cover; background-position: center;">
+                        {% if not block.image_url %}
+                        <div class="empty-state">Жоба суреті әлі жүктелмеген</div>
+                        {% endif %}
                     </div>
                     <div class="slide-content">
                         {% if block.tag %}
@@ -152,10 +157,12 @@
             <div class="team-category-card"
                 style="position: relative; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); text-align: center; transition: transform 0.3s ease;">
                 {% if user.is_staff %}
-                <button class="admin-edit-btn" style="z-index:10;"
-                    onclick="openImageUpload('teamcategory','{{ category.id }}','image')">📷 Upload Image</button>
-                <a href="{% url 'admin:content_teamcategory_change' category.id %}" class="admin-edit-btn"
-                    style="z-index:10; top:40px;" target="_blank">✏️ Edit</a>
+                <div class="admin-tools">
+                    <button type="button" class="admin-action"
+                        onclick="openImageUpload('teamcategory','{{ category.id }}','image')">📷 Upload</button>
+                    <a href="{% url 'admin:content_teamcategory_change' category.id %}" class="admin-action"
+                        target="_blank">✏️ Edit</a>
+                </div>
                 {% endif %}
 
                 <a href="{% url 'team_detail' category.id %}"
@@ -166,7 +173,7 @@
                         <img src="{{ category.image_url }}" alt="{{ category.title }}"
                             style="width: 100%; height: 100%; object-fit: cover;">
                         {% else %}
-                        <span style="font-size: 30px; color: var(--primary);">👥</span>
+                        <div class="empty-state">Команда суреті жоқ</div>
                         {% endif %}
                     </div>
                     <h3 style="margin: 0; font-size: 18px; color: var(--dark);">{{ category.title }}</h3>

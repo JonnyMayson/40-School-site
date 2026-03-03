@@ -233,6 +233,75 @@
             background: #ffe600;
         }
 
+        .admin-tools {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 2100;
+            display: none;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        body.edit-mode-active .admin-tools {
+            display: flex;
+        }
+
+        .admin-action {
+            appearance: none;
+            border: 1px solid #d0d5dd;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #111827;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1;
+            cursor: pointer;
+            text-decoration: none !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+            transition: 0.2s ease;
+        }
+
+        .admin-action:hover {
+            border-color: #98a2b3;
+            background: #fff;
+            transform: translateY(-1px);
+        }
+
+        .admin-action-danger {
+            background: rgba(220, 38, 38, 0.92);
+            color: #fff;
+            border-color: rgba(185, 28, 28, 0.95);
+            font-weight: 700;
+            min-width: 28px;
+            min-height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 8px;
+        }
+
+        .admin-action-danger:hover {
+            background: rgba(185, 28, 28, 0.98);
+            border-color: rgba(153, 27, 27, 1);
+        }
+
+        .empty-state {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 16px;
+            color: #98a2b3;
+            font-size: 14px;
+            font-weight: 600;
+            background: repeating-linear-gradient(135deg, #f8fafc, #f8fafc 10px, #f1f5f9 10px, #f1f5f9 20px);
+        }
+
         /* Additional CSS from Index */
         .hero {
             padding-top: 140px;
@@ -280,6 +349,10 @@
             transform: translate(-50%, -50%);
             color: #777;
             font-weight: 700;
+        }
+
+        .hero-img.has-image::before {
+            display: none;
         }
 
         .stats {
@@ -551,7 +624,10 @@
             }
 
             .header-actions .btn {
-                display: none;
+                display: inline-block;
+                padding: 8px 12px;
+                font-size: 13px;
+                white-space: nowrap;
             }
 
             .hero-title {
@@ -757,7 +833,8 @@
                 </div>
                 {% endif %}
                 <span class="lang-switch">RU | KZ</span>
-                <a href="#" class="btn btn-primary">Кеңес алу</a>
+                <a href="{{ whatsapp_url }}"
+                    class="btn btn-primary" target="_blank" rel="noopener noreferrer">Кеңес алу</a>
             </div>
         </div>
     </header>

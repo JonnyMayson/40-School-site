@@ -29,8 +29,10 @@ Optional:
 From the project root:
 
 ```bash
-docker compose --profile ngrok up -d --build
+docker compose up -d --build
 ```
+
+Hot reload is enabled for the Django app: when Python/templates change, the server reloads automatically.
 
 ## 4. Verify
 Check containers:
@@ -51,11 +53,4 @@ Open:
 ## 5. Optional: Create Django Admin User
 ```bash
 docker compose exec web python backend/manage.py createsuperuser
-```
-
-## Optional: DuckDNS Mode
-If you want the previous DuckDNS/Caddy mode, run:
-
-```bash
-docker compose --profile duckdns up -d --build
 ```

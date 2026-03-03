@@ -8,8 +8,10 @@
         <!-- Header Info -->
         <div class="article-header" style="margin-bottom: 40px; position: relative;">
             {% if user.is_staff %}
-            <a href="{% url 'admin:content_newsarticle_change' news_item.id %}" class="admin-edit-btn" target="_blank"
-                style="top: 0; right: 0;">✏️ Edit Article</a>
+            <div class="admin-tools" style="top:0;right:0;">
+                <a href="{% url 'admin:content_newsarticle_change' news_item.id %}" class="admin-action"
+                    target="_blank">✏️ Edit</a>
+            </div>
             {% endif %}
 
             <div style="margin-bottom: 20px;">
@@ -34,17 +36,20 @@
         <div class="article-image"
             style="width: 100%; border-radius: 20px; overflow: hidden; margin-bottom: 40px; position: relative;">
             {% if user.is_staff %}
-            <button class="admin-edit-btn" style="z-index:10;"
-                onclick="openImageUpload('newsarticle','{{ news_item.id }}','card_image')">📷 Upload Image</button>
-            {% if news_item.card_image %}
-            <button onclick="removeImage('newsarticle','{{ news_item.id }}','card_image')"
-                style="position:absolute;top:8px;left:8px;z-index:20;background:rgba(220,38,38,0.85);color:#fff;border:none;border-radius:50%;width:28px;height:28px;font-size:16px;cursor:pointer;line-height:1;"
-                title="Суретті жою">&#x2715;</button>
-            {% endif %}
+            <div class="admin-tools">
+                <button type="button" class="admin-action"
+                    onclick="openImageUpload('newsarticle','{{ news_item.id }}','card_image')">📷 Upload</button>
+                {% if news_item.card_image %}
+                <button type="button" class="admin-action admin-action-danger"
+                    onclick="removeImage('newsarticle','{{ news_item.id }}','card_image')" title="Суретті жою">&#x2715;</button>
+                {% endif %}
+            </div>
             {% endif %}
             {% if news_item.card_image %}
             <img src="{{ news_item.card_image_url }}" alt="{{ news_item.title }}"
                 style="width: 100%; height: auto; display: block;">
+            {% else %}
+            <div class="empty-state" style="min-height:280px;">Жаңалыққа сурет жүктелмеген</div>
             {% endif %}
         </div>
         {% endif %}

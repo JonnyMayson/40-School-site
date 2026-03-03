@@ -30,10 +30,10 @@ services:
       sh -c "
       cd backend &&
       python manage.py migrate &&
-      python manage.py collectstatic --noinput &&
-      gunicorn qundylyq_project.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120
+      python manage.py runserver 0.0.0.0:8000
       "
     volumes:
+      - ./:/app
       - static_volume:/app/backend/staticfiles
       - media_volume:/app/backend/media
     expose:
@@ -41,42 +41,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-
-  caddy:
-    image: caddy:2
-    container_name: qundylyk-caddy
-    restart: unless-stopped
-    profiles: ["duckdns"]
-    env_file:
-      - .env
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
-      - static_volume:/srv/static
-      - media_volume:/srv/media
-      - caddy_data:/data
-      - caddy_config:/config
-    depends_on:
-      - web
-
-  duckdns:
-    image: lscr.io/linuxserver/duckdns:latest
-    container_name: qundylyk-duckdns
-    restart: unless-stopped
-    profiles: ["duckdns"]
-    env_file:
-      - .env
-    environment:
-      - PUID=${PUID:-1000}
-      - PGID=${PGID:-1000}
-      - TZ=${TZ:-UTC}
-      - SUBDOMAINS=${DUCKDNS_SUBDOMAIN}
-      - TOKEN=${DUCKDNS_TOKEN}
-      - LOG_FILE=true
-    volumes:
-      - duckdns_config:/config
 
   ngrok:
     image: ngrok/ngrok:latest
@@ -94,6 +58,3 @@ volumes:
   postgres_data:
   static_volume:
   media_volume:
-  caddy_data:
-  caddy_config:
-  duckdns_config:
