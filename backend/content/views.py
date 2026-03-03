@@ -18,7 +18,7 @@ def update_image_url(request):
     model_name = request.POST.get('model', '').lower()
     object_id  = request.POST.get('object_id')
     field_name = request.POST.get('field')
-    url        = request.POST.get('url', '').strip()
+    uploaded_image = request.FILES.get('image')
 
     if model_name not in ALLOWED_MODELS:
         return JsonResponse({'error': 'Unknown model'}, status=400)
@@ -27,31 +27,39 @@ def update_image_url(request):
     if field_name not in allowed_fields:
         return JsonResponse({'error': 'Field not allowed'}, status=400)
 
-    if not url.startswith('http'):
-        return JsonResponse({'error': 'Invalid URL'}, status=400)
+    if not uploaded_image:
+        return JsonResponse({'error': 'Image file is required'}, status=400)
 
     try:
         obj = model_class.objects.get(pk=object_id)
-        setattr(obj, field_name, url)
+        old_file = getattr(obj, field_name, None)
+        old_name = old_file.name if old_file else None
+
+        setattr(obj, field_name, uploaded_image)
         obj.save(update_fields=[field_name])
-        return JsonResponse({'success': True, 'url': url})
+
+        new_file = getattr(obj, field_name, None)
+        if old_name and new_file and old_name != new_file.name:
+            old_file.storage.delete(old_name)
+
+        return JsonResponse({'success': True, 'url': new_file.url if new_file else ''})
     except model_class.DoesNotExist:
         return JsonResponse({'error': 'Object not found'}, status=404)
 
 @staff_member_required
 @require_POST
 def create_hero_block(request):
-    """Create a new HeroBlock with the given image URL (used when no hero exists)."""
-    url = request.POST.get('url', '').strip()
-    if not url.startswith('http'):
-        return JsonResponse({'error': 'Invalid URL'}, status=400)
-    hero = HeroBlock.objects.create(image=url, is_active=True)
-    return JsonResponse({'success': True, 'id': hero.id, 'url': url})
+    """Create a new HeroBlock with uploaded image (used when no hero exists)."""
+    uploaded_image = request.FILES.get('image')
+    if not uploaded_image:
+        return JsonResponse({'error': 'Image file is required'}, status=400)
+    hero = HeroBlock.objects.create(image=uploaded_image, is_active=True)
+    return JsonResponse({'success': True, 'id': hero.id, 'url': hero.image.url if hero.image else ''})
 
 @staff_member_required
 @require_POST
 def clear_image_url(request):
-    """Clear the image URL for a model field (set to empty string)."""
+    """Clear image file for a model field."""
     model_name = request.POST.get('model', '').lower()
     object_id  = request.POST.get('object_id')
     field_name = request.POST.get('field')
@@ -65,8 +73,15 @@ def clear_image_url(request):
 
     try:
         obj = model_class.objects.get(pk=object_id)
-        setattr(obj, field_name, '')
+        old_file = getattr(obj, field_name, None)
+        old_name = old_file.name if old_file else None
+
+        setattr(obj, field_name, None)
         obj.save(update_fields=[field_name])
+
+        if old_name and old_file:
+            old_file.storage.delete(old_name)
+
         return JsonResponse({'success': True})
     except model_class.DoesNotExist:
         return JsonResponse({'error': 'Object not found'}, status=404)

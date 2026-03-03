@@ -1,46 +1,61 @@
-# Qundylyq Project Setup Guide
+# Qundylyq Deployment Guide (Docker + ngrok)
 
-Follow these steps to set up the project on a new computer.
+This project is configured for production deployment with:
+- Django + Gunicorn
+- PostgreSQL
+- ngrok tunnel (public HTTPS URL without router setup)
 
 ## 1. Prerequisites
-- **Python** (version 3.10 or higher) must be installed.
+- Docker and Docker Compose installed
+- ngrok account and auth token
 
-## 2. Setup (Windows)
-
-Open your terminal (PowerShell or Command Prompt) in this folder and run the following commands one by one:
-
-### Step 1: Create Virtual Environment
-```bash
-python -m venv venv
-```
-
-### Step 2: Activate Virtual Environment
-```bash
-.\venv\Scripts\activate
-```
-
-### Step 3: Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### Step 4: Apply Database Migrations
-```bash
-python backend/manage.py migrate
-```
-
-### Step 5: Create Admin User (Optional)
-To access the admin panel, create a superuser:
-```bash
-python backend/manage.py createsuperuser
-```
-*(Follow the prompts to set username and password)*
-
-## 3. Run the Server
-Whenever you want to start the website, run:
+## 2. Configure Environment
+Create `.env` from template:
 
 ```bash
-python backend/manage.py runserver
+cp .env.example .env
 ```
 
-Then open **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)** in your browser.
+Set at least:
+- `NGROK_AUTHTOKEN`
+- `ALLOWED_HOSTS` (include `.ngrok-free.app`)
+- `CSRF_TRUSTED_ORIGINS` (include `https://*.ngrok-free.app`)
+- `DJANGO_SECRET_KEY`
+
+Optional:
+- `NGROK_DOMAIN` (only if you have a reserved/custom ngrok domain)
+
+## 3. Start Services
+From the project root:
+
+```bash
+docker compose --profile ngrok up -d --build
+```
+
+## 4. Verify
+Check containers:
+
+```bash
+docker compose ps
+```
+
+Check logs:
+
+```bash
+docker compose logs -f ngrok web
+```
+
+Open:
+- ngrok URL from logs (example: `https://abc123.ngrok-free.app`)
+
+## 5. Optional: Create Django Admin User
+```bash
+docker compose exec web python backend/manage.py createsuperuser
+```
+
+## Optional: DuckDNS Mode
+If you want the previous DuckDNS/Caddy mode, run:
+
+```bash
+docker compose --profile duckdns up -d --build
+```
