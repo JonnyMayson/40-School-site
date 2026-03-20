@@ -118,3 +118,70 @@ class SiteSettings(models.Model):
     def get(cls):
         obj, _ = cls.objects.get_or_create(pk=1)
         return obj
+
+
+class SectionOrder(models.Model):
+    """Stores display order, background color and visibility of each page section."""
+    section_key = models.CharField(max_length=50, unique=True)
+    order = models.IntegerField(default=0)
+    bg_color = models.CharField(max_length=20, blank=True, default='')
+    is_visible = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Секция реті"
+        verbose_name_plural = "Секция реті"
+
+    def __str__(self):
+        return f"{self.section_key} (order={self.order})"
+
+    @classmethod
+    def get_ordered(cls):
+        """Return dict of section_key -> {order, bg_color, is_visible}."""
+        defaults = [
+            ('hero', 0), ('stats', 1), ('principles', 2),
+            ('projects', 3), ('team', 4),
+        ]
+        existing = {s.section_key: s for s in cls.objects.all()}
+        for key, default_order in defaults:
+            if key not in existing:
+                cls.objects.create(section_key=key, order=default_order)
+        sections = cls.objects.all().order_by('order')
+        return list(sections.values('section_key', 'order', 'bg_color', 'is_visible'))
+
+
+class ElementStyle(models.Model):
+    """Stores per-element CSS styles (text color, font, size, weight, bg)."""
+    element_id = models.CharField(max_length=100, unique=True)
+    color = models.CharField(max_length=20, blank=True, default='')
+    font_family = models.CharField(max_length=100, blank=True, default='')
+    font_size = models.CharField(max_length=20, blank=True, default='')
+    font_weight = models.CharField(max_length=20, blank=True, default='')
+    bg_color = models.CharField(max_length=20, blank=True, default='')
+
+    class Meta:
+        verbose_name = "Элемент стилі"
+        verbose_name_plural = "Элемент стильдері"
+
+    def __str__(self):
+        return self.element_id
+
+    def to_css(self):
+        """Return inline CSS string."""
+        parts = []
+        if self.color:
+            parts.append(f"color:{self.color}")
+        if self.font_family:
+            parts.append(f"font-family:'{self.font_family}',sans-serif")
+        if self.font_size:
+            parts.append(f"font-size:{self.font_size}")
+        if self.font_weight:
+            parts.append(f"font-weight:{self.font_weight}")
+        if self.bg_color:
+            parts.append(f"background-color:{self.bg_color}")
+        return ';'.join(parts)
+
+    @classmethod
+    def get_all_dict(cls):
+        """Return dict of element_id -> css string."""
+        return {e.element_id: e.to_css() for e in cls.objects.all()}

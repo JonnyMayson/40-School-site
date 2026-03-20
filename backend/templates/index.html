@@ -2,7 +2,9 @@
 {% load static %}
 
 {% block content %}
-<section class="hero">
+<div id="main-content">
+
+<section class="hero" data-section="hero">
     <div class="container hero-grid">
         <div class="hero-text">
             {% if user.is_staff %}
@@ -14,17 +16,17 @@
                 class="admin-edit-btn" target="_blank">➕ Create Hero (Edit Default)</a>
             {% endif %}
             {% endif %}
-            <div style="color: #074320; font-weight: 600; margin-bottom: 10px;">БІЛІМ БЕРУ ОРТАЛЫҒЫ</div>
-            <h1 class="hero-title">
+            <div style="color: #074320; font-weight: 600; margin-bottom: 10px;" data-styleable="hero-subtitle">БІЛІМ БЕРУ ОРТАЛЫҒЫ</div>
+            <h1 class="hero-title" data-styleable="hero-title">
                 {% if hero_block %}
-                <span {% if user.is_staff %}data-editable="heroblock:{{ hero_block.id }}:title"{% endif %}>{{ hero_block.title|default:"Мектептегі оқу-тәрбие процестерін бізбен бірге реттеңіз" }}</span>
+                <span data-editable="heroblock:{{ hero_block.id }}:title" data-styleable="hero-title-text">{{ hero_block.title|default:"Мектептегі оқу-тәрбие процестерін бізбен бірге реттеңіз" }}</span>
                 {% else %}
                 Мектептегі оқу-тәрбие процестерін бізбен бірге реттеңіз
                 {% endif %}
             </h1>
-            <p class="hero-desc">
+            <p class="hero-desc" data-styleable="hero-desc">
                 {% if hero_block %}
-                <span {% if user.is_staff %}data-editable="heroblock:{{ hero_block.id }}:description"{% endif %}>{{ hero_block.description|default:"Qundylyq — «Білім-инновация» лицейлерінің табысты тәжірибесіне негізделген құндылыққа бағытталған білім беруді енгізуге көмектесеміз." }}</span>
+                <span data-editable="heroblock:{{ hero_block.id }}:description" data-styleable="hero-desc-text">{{ hero_block.description|default:"Qundylyq — «Білім-инновация» лицейлерінің табысты тәжірибесіне негізделген құндылыққа бағытталған білім беруді енгізуге көмектесеміз." }}</span>
                 {% else %}
                 Qundylyq — «Білім-инновация» лицейлерінің табысты тәжірибесіне негізделген құндылыққа бағытталған
                 білім беруді енгізуге көмектесеміз.
@@ -57,44 +59,46 @@
     </div>
 </section>
 
-<section class="stats">
+<section class="stats" data-section="stats">
     <div class="container stats-grid">
         <div class="stat-item">
-            <h3>+400</h3>
-            <p>Мектеп қосылды</p>
+            <h3 data-styleable="stat-0-value">+400</h3>
+            <p data-styleable="stat-0-label">Мектеп қосылды</p>
         </div>
         <div class="stat-item">
-            <h3>+10k</h3>
-            <p>Мұғалім оқытылды</p>
+            <h3 data-styleable="stat-1-value">+10k</h3>
+            <p data-styleable="stat-1-label">Мұғалім оқытылды</p>
         </div>
         <div class="stat-item">
-            <h3>+2500</h3>
-            <p>Мастер-класстар</p>
+            <h3 data-styleable="stat-2-value">+2500</h3>
+            <p data-styleable="stat-2-label">Мастер-класстар</p>
         </div>
         <div class="stat-item">
-            <h3>95%</h3>
-            <p>Оң нәтижелер</p>
+            <h3 data-styleable="stat-3-value">95%</h3>
+            <p data-styleable="stat-3-label">Оң нәтижелер</p>
         </div>
     </div>
 </section>
 
-<section class="principles">
+<section class="principles" data-section="principles">
     <div class="container">
         <div class="section-header">
-            <h2>Біздің қағидаларымыз</h2>
-            <p>Адамгершілік, құрмет және жайлы білім беру ортасын қалыптастыру</p>
+            <h2 data-styleable="principles-title">Біздің қағидаларымыз</h2>
+            <p data-styleable="principles-desc">Адамгершілік, құрмет және жайлы білім беру ортасын қалыптастыру</p>
         </div>
         <div class="swiper principlesSwiper">
             <div class="swiper-wrapper">
                 {% for principle in principles %}
-                <div class="swiper-slide card">
+                <div class="swiper-slide card" style="position:relative;">
                     {% if user.is_staff %}
                     <a href="{% url 'admin:content_principleblock_change' principle.id %}" class="admin-edit-btn"
                         target="_blank">✏️ Edit</a>
+                    <button class="admin-edit-btn" style="top:40px;background:rgba(220,38,38,0.85);color:#fff;"
+                        onclick="builderDeleteElement('principleblock','{{ principle.id }}')">🗑️</button>
                     {% endif %}
                     <div class="icon-box"><i class="{{ principle.icon }}"></i></div>
-                    <h4>{{ principle.title }}</h4>
-                    <p style="color: #666;">{{ principle.description }}</p>
+                    <h4 data-editable="principleblock:{{ principle.id }}:title" data-styleable="principle-{{ principle.id }}-title">{{ principle.title }}</h4>
+                    <p style="color: #666;" data-editable="principleblock:{{ principle.id }}:description" data-styleable="principle-{{ principle.id }}-desc">{{ principle.description }}</p>
                 </div>
                 {% endfor %}
             </div>
@@ -103,22 +107,24 @@
     </div>
 </section>
 
-<section class="projects">
+<section class="projects" data-section="projects">
     <div class="container">
         <div class="section-header">
-            <h2>Біздің Жобалар</h2>
-            <p>Авторлық курстар және әдістемелік құралдар</p>
+            <h2 data-styleable="projects-title">Біздің Жобалар</h2>
+            <p data-styleable="projects-desc">Авторлық курстар және әдістемелік құралдар</p>
         </div>
 
         <div class="swiper mySwiper">
             <div class="swiper-wrapper">
                 {% for block in blocks %}
-                <div class="swiper-slide project-slide">
+                <div class="swiper-slide project-slide" style="position:relative;">
                     {% if user.is_staff %}
                     <button class="admin-edit-btn" onclick="openImageUpload('photoblock','{{ block.id }}','image')">📷
                         Upload Image</button>
                     <a href="{% url 'admin:content_photoblock_change' block.id %}" class="admin-edit-btn"
                         style="top:40px;" target="_blank">✏️ Edit</a>
+                    <button class="admin-edit-btn" style="top:70px;background:rgba(220,38,38,0.85);color:#fff;"
+                        onclick="builderDeleteElement('photoblock','{{ block.id }}')">🗑️</button>
                     {% endif %}
                     <div class="slide-img"
                         style="background-image: url('{{ block.image }}'); background-size: cover; background-position: center;">
@@ -127,8 +133,8 @@
                         {% if block.tag %}
                         <span class="slide-tag">{{ block.tag }}</span>
                         {% endif %}
-                        <h3 class="slide-title">{{ block.title }}</h3>
-                        <p class="slide-desc">{{ block.description }}</p>
+                        <h3 class="slide-title" data-editable="photoblock:{{ block.id }}:title" data-styleable="project-{{ block.id }}-title">{{ block.title }}</h3>
+                        <p class="slide-desc" data-editable="photoblock:{{ block.id }}:description" data-styleable="project-{{ block.id }}-desc">{{ block.description }}</p>
                         {% if block.link %}
                         <a href="{{ block.link }}" class="slide-link">Толығырақ &rarr;</a>
                         {% endif %}
@@ -141,11 +147,11 @@
     </div>
 </section>
 
-<section class="team" style="padding: 100px 0; background: #fff;">
+<section class="team" style="padding: 100px 0; background: #fff;" data-section="team">
     <div class="container">
         <div class="section-header">
-            <h2>QUNDYLYQ КОМАНДАСЫ</h2>
-            <p>Біздің кәсіби мамандар</p>
+            <h2 data-styleable="team-title">QUNDYLYQ КОМАНДАСЫ</h2>
+            <p data-styleable="team-desc">Біздің кәсіби мамандар</p>
         </div>
         <div class="team-grid"
             style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; margin-top: 50px;">
@@ -157,6 +163,8 @@
                     onclick="openImageUpload('teamcategory','{{ category.id }}','image')">📷 Upload Image</button>
                 <a href="{% url 'admin:content_teamcategory_change' category.id %}" class="admin-edit-btn"
                     style="z-index:10; top:40px;" target="_blank">✏️ Edit</a>
+                <button class="admin-edit-btn" style="z-index:10; top:70px;background:rgba(220,38,38,0.85);color:#fff;"
+                    onclick="builderDeleteElement('teamcategory','{{ category.id }}')">🗑️</button>
                 {% endif %}
 
                 <a href="{% url 'team_detail' category.id %}"
@@ -170,7 +178,7 @@
                         <span style="font-size: 30px; color: var(--primary);">👥</span>
                         {% endif %}
                     </div>
-                    <h3 style="margin: 0; font-size: 18px; color: var(--dark);">{{ category.title }}</h3>
+                    <h3 style="margin: 0; font-size: 18px; color: var(--dark);" data-editable="teamcategory:{{ category.id }}:title" data-styleable="team-cat-{{ category.id }}-title">{{ category.title }}</h3>
                 </a>
             </div>
             {% endfor %}
@@ -187,6 +195,8 @@
             {% endif %}
         </div>
 </section>
+
+</div><!-- /main-content -->
 {% endblock %}
 
 {% block extra_scripts %}

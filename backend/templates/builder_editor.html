@@ -1,0 +1,605 @@
+<!-- ===== FULL SITE BUILDER (staff only, edit mode) ===== -->
+<style>
+    /* ── Builder Toolbar (top) ────────────────────────────────────── */
+    #builder-toolbar {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        height: 50px;
+        background: linear-gradient(135deg, #1e7a45, #2d9a5f);
+        z-index: 10000;
+        align-items: center;
+        padding: 0 20px;
+        gap: 10px;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.2);
+        font-family: 'Inter', sans-serif;
+    }
+    body.edit-mode-active #builder-toolbar { display: flex; }
+    body.edit-mode-active header { top: 50px !important; }
+    body.edit-mode-active .hero { padding-top: 190px !important; }
+
+    .tb-btn {
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+        white-space: nowrap;
+    }
+    .tb-btn:hover { background: rgba(255,255,255,0.3); }
+    .tb-btn.active { background: rgba(255,255,255,0.4); }
+    .tb-sep { width: 1px; height: 28px; background: rgba(255,255,255,0.25); }
+    .tb-title { color: #fff; font-weight: 700; font-size: 14px; margin-right: auto; }
+
+    /* ── Sections Sidebar ─────────────────────────────────────────── */
+    #sections-sidebar {
+        display: none;
+        position: fixed;
+        left: 0; top: 50px; bottom: 0;
+        width: 280px;
+        background: #fff;
+        z-index: 9999;
+        box-shadow: 4px 0 30px rgba(0,0,0,0.1);
+        overflow-y: auto;
+        font-family: 'Inter', sans-serif;
+    }
+    #sections-sidebar.open { display: block; }
+    #sections-sidebar h3 {
+        padding: 16px 20px; margin: 0;
+        font-size: 14px; color: #1e7a45;
+        border-bottom: 1px solid #eee;
+    }
+    .section-item {
+        display: flex; align-items: center;
+        padding: 12px 20px;
+        border-bottom: 1px solid #f0f0f0;
+        cursor: grab; transition: background 0.2s; gap: 10px;
+    }
+    .section-item:hover { background: #f9fafb; }
+    .section-item.dragging { opacity: 0.4; background: #e8f5e9; }
+    .section-item .drag-handle { color: #bbb; font-size: 16px; cursor: grab; }
+    .section-item .section-name { flex: 1; font-size: 13px; font-weight: 600; color: #333; }
+    .section-item .section-actions { display: flex; gap: 6px; }
+    .section-item .section-actions button {
+        background: none; border: none; cursor: pointer;
+        font-size: 14px; padding: 4px; border-radius: 4px;
+    }
+    .section-item .section-actions button:hover { background: #f0f0f0; }
+
+    /* ── Style Panel (right) ──────────────────────────────────────── */
+    #style-panel {
+        display: none;
+        position: fixed;
+        right: 0; top: 50px; bottom: 0;
+        width: 300px;
+        background: #fff;
+        z-index: 9999;
+        box-shadow: -4px 0 30px rgba(0,0,0,0.1);
+        overflow-y: auto;
+        font-family: 'Inter', sans-serif;
+    }
+    #style-panel.open { display: block; }
+    .sp-header {
+        padding: 16px 20px;
+        background: linear-gradient(135deg, #1e7a45, #2d9a5f);
+        color: #fff; font-size: 13px; font-weight: 700;
+        display: flex; align-items: center; justify-content: space-between;
+    }
+    .sp-header button {
+        background: rgba(255,255,255,0.2); border: none; color: #fff;
+        width: 28px; height: 28px; border-radius: 6px; cursor: pointer; font-size: 14px;
+    }
+    .sp-group { padding: 12px 20px; border-bottom: 1px solid #f0f0f0; }
+    .sp-label {
+        font-size: 11px; font-weight: 700; text-transform: uppercase;
+        color: #888; margin-bottom: 8px;
+    }
+    .sp-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .sp-color-input { width: 36px; height: 36px; border: none; border-radius: 8px; cursor: pointer; padding: 0; background: none; }
+    .sp-hex-input { flex: 1; border: 1px solid #e0e0e0; border-radius: 6px; padding: 8px 10px; font-family: monospace; font-size: 12px; }
+    .sp-select { width: 100%; border: 1px solid #e0e0e0; border-radius: 6px; padding: 8px 10px; font-size: 12px; background: #fff; }
+    .sp-slider-row { display: flex; align-items: center; gap: 8px; }
+    .sp-slider-row input[type=range] { flex: 1; accent-color: #1e7a45; }
+    .sp-slider-row span { font-size: 12px; font-family: monospace; min-width: 40px; }
+    .sp-bold-btn {
+        padding: 8px 14px; border: 1px solid #e0e0e0; border-radius: 6px;
+        cursor: pointer; font-weight: 900; font-size: 14px; background: #fff; transition: 0.2s;
+    }
+    .sp-bold-btn.active { background: #1e7a45; color: #fff; border-color: #1e7a45; }
+    .sp-save-btn {
+        width: 100%; padding: 10px;
+        background: linear-gradient(135deg, #1e7a45, #2d9a5f);
+        color: #fff; border: none; border-radius: 8px;
+        font-weight: 700; cursor: pointer; margin-top: 8px; font-size: 13px;
+    }
+    .sp-save-btn:hover { opacity: 0.9; }
+
+    /* ── Colors Panel (right) ─────────────────────────────────────── */
+    #colors-panel {
+        display: none;
+        position: fixed;
+        right: 0; top: 50px; bottom: 0;
+        width: 300px; background: #fff;
+        z-index: 9999;
+        box-shadow: -4px 0 30px rgba(0,0,0,0.1);
+        overflow-y: auto;
+        font-family: 'Inter', sans-serif;
+    }
+    #colors-panel.open { display: block; }
+
+    /* ── Editable elements ────────────────────────────────────────── */
+    body.edit-mode-active [data-editable] {
+        outline: 2px dashed rgba(30, 122, 69, 0.4);
+        outline-offset: 2px; border-radius: 4px; cursor: text;
+    }
+    body.edit-mode-active [data-editable]:hover {
+        outline: 2px solid var(--primary);
+        background: rgba(30, 122, 69, 0.04);
+    }
+    body.edit-mode-active [data-editable]:focus {
+        outline: 2px solid var(--primary);
+        background: rgba(30, 122, 69, 0.06);
+    }
+    body.edit-mode-active [data-styleable].style-selected {
+        outline: 3px solid #f59e0b !important; outline-offset: 2px;
+    }
+
+    /* ── Toast ────────────────────────────────────────────────────── */
+    #builder-toast {
+        position: fixed; bottom: 30px; left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        background: #1e7a45; color: #fff;
+        padding: 12px 24px; border-radius: 10px;
+        font-size: 14px; font-weight: 600;
+        opacity: 0; pointer-events: none;
+        transition: opacity 0.3s, transform 0.3s;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        z-index: 99999; font-family: 'Inter', sans-serif;
+    }
+    #builder-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    #builder-toast.error { background: #dc2626; }
+</style>
+
+<!-- Google Fonts for builder -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Roboto:wght@400;700&family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600;700&family=Nunito:wght@400;600;700&family=Raleway:wght@400;600;700&family=Poppins:wght@400;600;700&family=Playfair+Display:wght@400;700&family=Merriweather:wght@400;700&family=Oswald:wght@400;600;700&family=Lora:wght@400;700&family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- Builder Toolbar -->
+<div id="builder-toolbar">
+    <span class="tb-title">🏗️ Site Builder</span>
+    <button class="tb-btn" onclick="builderToggleSections()">📑 Секциялар</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" onclick="builderAddMenu()">➕ Қосу</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" onclick="builderToggleColors()">🎨 Түстер</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" onclick="builderSaveAll()" style="background:rgba(255,255,255,0.3);">💾 Сақтау</button>
+</div>
+
+<!-- Sections Sidebar -->
+<div id="sections-sidebar">
+    <h3>📑 Секциялар реті</h3>
+    <div id="sections-list"></div>
+</div>
+
+<!-- Style Panel -->
+<div id="style-panel">
+    <div class="sp-header">
+        <span>🎨 Элемент стилі</span>
+        <button onclick="builderCloseStylePanel()">✕</button>
+    </div>
+    <div class="sp-group">
+        <div class="sp-label">Мәтін түсі</div>
+        <div class="sp-row">
+            <input type="color" class="sp-color-input" id="sp-text-color" value="#333333" onchange="builderStylePreview()">
+            <input type="text" class="sp-hex-input" id="sp-text-hex" value="#333333" onchange="document.getElementById('sp-text-color').value=this.value; builderStylePreview()">
+        </div>
+    </div>
+    <div class="sp-group">
+        <div class="sp-label">Шрифт</div>
+        <select class="sp-select" id="sp-font" onchange="builderStylePreview()">
+            <option value="">Әдепкі (Default)</option>
+            <option value="Inter">Inter</option>
+            <option value="Roboto">Roboto</option>
+            <option value="Montserrat">Montserrat</option>
+            <option value="Open Sans">Open Sans</option>
+            <option value="Nunito">Nunito</option>
+            <option value="Raleway">Raleway</option>
+            <option value="Poppins">Poppins</option>
+            <option value="Playfair Display">Playfair Display</option>
+            <option value="Merriweather">Merriweather</option>
+            <option value="Oswald">Oswald</option>
+            <option value="Lora">Lora</option>
+            <option value="Ubuntu">Ubuntu</option>
+        </select>
+    </div>
+    <div class="sp-group">
+        <div class="sp-label">Шрифт өлшемі</div>
+        <div class="sp-slider-row">
+            <input type="range" id="sp-size" min="10" max="80" value="16" oninput="document.getElementById('sp-size-val').textContent=this.value+'px'; builderStylePreview()">
+            <span id="sp-size-val">16px</span>
+        </div>
+    </div>
+    <div class="sp-group">
+        <div class="sp-label">Қалыңдығы</div>
+        <button class="sp-bold-btn" id="sp-bold" onclick="this.classList.toggle('active'); builderStylePreview()">B</button>
+    </div>
+    <div class="sp-group">
+        <div class="sp-label">Фон түсі</div>
+        <div class="sp-row">
+            <input type="color" class="sp-color-input" id="sp-bg-color" value="#ffffff" onchange="document.getElementById('sp-bg-hex').value=this.value; builderStylePreview()">
+            <input type="text" class="sp-hex-input" id="sp-bg-hex" value="" placeholder="мөлдір" onchange="if(this.value){document.getElementById('sp-bg-color').value=this.value;} builderStylePreview()">
+        </div>
+    </div>
+    <div class="sp-group">
+        <button class="sp-save-btn" onclick="builderSaveStyle()">💾 Стильді сақтау</button>
+    </div>
+</div>
+
+<!-- Colors Panel -->
+<div id="colors-panel">
+    <div class="sp-header">
+        <span>🎨 Глобалды түстер</span>
+        <button onclick="document.getElementById('colors-panel').classList.remove('open')">✕</button>
+    </div>
+    <div class="sp-group">
+        <div class="sp-label">Негізгі түс (Primary)</div>
+        <div class="sp-row">
+            <input type="color" class="sp-color-input" id="gc-primary" value="{{ site_settings.primary_color|default:'#1e7a45' }}" onchange="document.getElementById('gc-primary-hex').value=this.value; document.documentElement.style.setProperty('--primary',this.value);">
+            <input type="text" class="sp-hex-input" id="gc-primary-hex" value="{{ site_settings.primary_color|default:'#1e7a45' }}">
+        </div>
+    </div>
+    <div class="sp-group">
+        <div class="sp-label">Акцент түсі (Accent)</div>
+        <div class="sp-row">
+            <input type="color" class="sp-color-input" id="gc-accent" value="{{ site_settings.accent_color|default:'#1e7a45' }}" onchange="document.getElementById('gc-accent-hex').value=this.value; document.documentElement.style.setProperty('--accent',this.value);">
+            <input type="text" class="sp-hex-input" id="gc-accent-hex" value="{{ site_settings.accent_color|default:'#1e7a45' }}">
+        </div>
+    </div>
+    <div class="sp-group">
+        <div class="sp-label">Футер фоны (Footer)</div>
+        <div class="sp-row">
+            <input type="color" class="sp-color-input" id="gc-footer" value="{{ site_settings.footer_color|default:'#1a4731' }}" onchange="document.getElementById('gc-footer-hex').value=this.value; document.querySelector('footer').style.background=this.value;">
+            <input type="text" class="sp-hex-input" id="gc-footer-hex" value="{{ site_settings.footer_color|default:'#1a4731' }}">
+        </div>
+    </div>
+    <div class="sp-group">
+        <button class="sp-save-btn" onclick="builderSaveGlobalColors()">💾 Түстерді сақтау</button>
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="builder-toast"></div>
+
+<script>
+    const B_CSRF = '{{ csrf_token }}';
+    const SECTION_NAMES = {
+        hero: '🏠 Басты экран (Hero)',
+        stats: '📊 Статистика',
+        principles: '📋 Қағидалар',
+        projects: '🎯 Жобалар',
+        team: '👥 Команда'
+    };
+
+    function bToast(msg, isError) {
+        const t = document.getElementById('builder-toast');
+        t.textContent = msg;
+        t.className = 'show' + (isError ? ' error' : '');
+        setTimeout(() => { t.className = ''; }, 2500);
+    }
+
+    // ── Section orders ───────────────────────────────────────────
+    let sectionOrders = [];
+    try { sectionOrders = JSON.parse('{{ section_orders|escapejs }}'); } catch(e) {}
+
+    function builderToggleSections() {
+        const sb = document.getElementById('sections-sidebar');
+        sb.classList.toggle('open');
+        document.getElementById('colors-panel').classList.remove('open');
+        document.getElementById('style-panel').classList.remove('open');
+        if (sb.classList.contains('open')) builderRenderSections();
+    }
+
+    function builderRenderSections() {
+        if (!sectionOrders.length) {
+            sectionOrders = [
+                {section_key:'hero',order:0,bg_color:'',is_visible:true},
+                {section_key:'stats',order:1,bg_color:'',is_visible:true},
+                {section_key:'principles',order:2,bg_color:'',is_visible:true},
+                {section_key:'projects',order:3,bg_color:'',is_visible:true},
+                {section_key:'team',order:4,bg_color:'',is_visible:true},
+            ];
+        }
+        sectionOrders.sort((a,b) => a.order - b.order);
+        document.getElementById('sections-list').innerHTML = sectionOrders.map((s,i) => `
+            <div class="section-item" draggable="true" data-section-key="${s.section_key}" data-index="${i}">
+                <span class="drag-handle">☰</span>
+                <span class="section-name">${SECTION_NAMES[s.section_key]||s.section_key}</span>
+                <div class="section-actions">
+                    <button title="Фон түсі" onclick="builderEditSectionBg('${s.section_key}')">🎨</button>
+                    <button title="${s.is_visible?'Жасыру':'Көрсету'}" onclick="builderToggleSection('${s.section_key}')">
+                        ${s.is_visible?'👁️':'🚫'}
+                    </button>
+                </div>
+            </div>
+        `).join('');
+        builderInitSectionDrag();
+    }
+
+    function builderInitSectionDrag() {
+        let dragEl = null;
+        document.querySelectorAll('#sections-list .section-item').forEach(item => {
+            item.addEventListener('dragstart', e => { dragEl = item; item.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
+            item.addEventListener('dragend', () => {
+                item.classList.remove('dragging'); dragEl = null;
+                document.querySelectorAll('#sections-list .section-item').forEach((el, idx) => {
+                    const s = sectionOrders.find(x => x.section_key === el.dataset.sectionKey);
+                    if (s) s.order = idx;
+                });
+                builderApplySectionOrder();
+            });
+            item.addEventListener('dragover', e => {
+                e.preventDefault();
+                const list = document.getElementById('sections-list');
+                const afterEl = getDragAfter(list, e.clientY);
+                if (afterEl) list.insertBefore(dragEl, afterEl);
+                else list.appendChild(dragEl);
+            });
+        });
+    }
+
+    function getDragAfter(container, y) {
+        return [...container.querySelectorAll('.section-item:not(.dragging)')].reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) return { offset, element: child };
+            return closest;
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    function builderApplySectionOrder() {
+        const content = document.getElementById('main-content');
+        if (!content) return;
+        sectionOrders.sort((a,b) => a.order - b.order);
+        sectionOrders.forEach(s => {
+            const sec = document.querySelector(`section[data-section="${s.section_key}"]`);
+            if (sec) content.appendChild(sec);
+        });
+    }
+
+    async function builderSaveSectionOrder() {
+        const payload = { sections: sectionOrders.map(s => ({ key: s.section_key, order: s.order })) };
+        try {
+            const res = await fetch('/api/update-section-order/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': B_CSRF },
+                body: JSON.stringify(payload), credentials: 'same-origin'
+            });
+            const data = await res.json();
+            if (data.success) bToast('✅ Секция реті сақталды!');
+            else bToast('❌ ' + (data.error || 'Қате'), true);
+        } catch(e) { bToast('❌ ' + e.message, true); }
+    }
+
+    function builderEditSectionBg(key) {
+        const sec = document.querySelector(`section[data-section="${key}"]`);
+        if (!sec) return;
+        const color = prompt('Фон түсін енгізіңіз (мыс. #f0f4f8):', sec.style.backgroundColor || '');
+        if (color === null) return;
+        sec.style.backgroundColor = color;
+        const fd = new FormData(); fd.append('section_key', key); fd.append('bg_color', color); fd.append('csrfmiddlewaretoken', B_CSRF);
+        fetch('/api/update-section-bg/', { method: 'POST', body: fd, credentials: 'same-origin' })
+        .then(r => r.json()).then(d => { if (d.success) bToast('✅ Фон сақталды!'); }).catch(e => bToast('❌ '+e.message, true));
+    }
+
+    async function builderToggleSection(key) {
+        const fd = new FormData(); fd.append('section_key', key); fd.append('csrfmiddlewaretoken', B_CSRF);
+        try {
+            const res = await fetch('/api/toggle-section/', { method: 'POST', body: fd, credentials: 'same-origin' });
+            const data = await res.json();
+            const sec = document.querySelector(`section[data-section="${key}"]`);
+            if (sec) sec.style.display = data.is_visible ? '' : 'none';
+            const s = sectionOrders.find(x => x.section_key === key);
+            if (s) s.is_visible = data.is_visible;
+            builderRenderSections();
+            bToast(data.is_visible ? '👁️ Көрсетілді' : '🚫 Жасырылды');
+        } catch(e) { bToast('❌ '+e.message, true); }
+    }
+
+    // ── Add / Delete ─────────────────────────────────────────────
+    function builderAddMenu() {
+        const choice = prompt('Не қосу керек?\n1 — Қағида\n2 — Жоба\n3 — Команда категориясы', '1');
+        const map = { '1': 'principleblock', '2': 'photoblock', '3': 'teamcategory' };
+        if (!map[choice]) return;
+        const fd = new FormData(); fd.append('model', map[choice]); fd.append('csrfmiddlewaretoken', B_CSRF);
+        fetch('/api/create-element/', { method: 'POST', body: fd, credentials: 'same-origin' })
+        .then(r => r.json()).then(d => {
+            if (d.success) { bToast('✅ Қосылды!'); setTimeout(() => location.reload(), 800); }
+            else bToast('❌ '+(d.error||'Қате'), true);
+        }).catch(e => bToast('❌ '+e.message, true));
+    }
+
+    function builderDeleteElement(model, id) {
+        if (!confirm('Бұл элементті жою керек пе?')) return;
+        const fd = new FormData(); fd.append('model', model); fd.append('object_id', id); fd.append('csrfmiddlewaretoken', B_CSRF);
+        fetch('/api/delete-element/', { method: 'POST', body: fd, credentials: 'same-origin' })
+        .then(r => r.json()).then(d => {
+            if (d.success) { bToast('🗑️ Жойылды!'); setTimeout(() => location.reload(), 600); }
+            else bToast('❌ '+(d.error||'Қате'), true);
+        }).catch(e => bToast('❌ '+e.message, true));
+    }
+
+    // ── Style Panel ──────────────────────────────────────────────
+    let selectedElement = null, selectedElementId = null;
+    let elementStyles = {};
+    try { elementStyles = JSON.parse('{{ element_styles|escapejs }}'); } catch(e) {}
+
+    function builderOpenStylePanel(el) {
+        document.querySelectorAll('.style-selected').forEach(e => e.classList.remove('style-selected'));
+        selectedElement = el; selectedElementId = el.dataset.styleable;
+        el.classList.add('style-selected');
+        const cs = getComputedStyle(el);
+        document.getElementById('sp-text-color').value = rgbToHex(cs.color) || '#333333';
+        document.getElementById('sp-text-hex').value = rgbToHex(cs.color) || '#333333';
+        document.getElementById('sp-font').value = '';
+        const sz = parseInt(cs.fontSize) || 16;
+        document.getElementById('sp-size').value = sz;
+        document.getElementById('sp-size-val').textContent = sz + 'px';
+        document.getElementById('sp-bold').classList.toggle('active', parseInt(cs.fontWeight) >= 700);
+        document.getElementById('sp-bg-hex').value = '';
+        document.getElementById('style-panel').classList.add('open');
+        document.getElementById('sections-sidebar').classList.remove('open');
+        document.getElementById('colors-panel').classList.remove('open');
+    }
+
+    function builderCloseStylePanel() {
+        document.getElementById('style-panel').classList.remove('open');
+        document.querySelectorAll('.style-selected').forEach(e => e.classList.remove('style-selected'));
+        selectedElement = null; selectedElementId = null;
+    }
+
+    function builderStylePreview() {
+        if (!selectedElement) return;
+        const color = document.getElementById('sp-text-color').value;
+        const font = document.getElementById('sp-font').value;
+        const size = document.getElementById('sp-size').value + 'px';
+        const bold = document.getElementById('sp-bold').classList.contains('active');
+        const bg = document.getElementById('sp-bg-hex').value;
+        document.getElementById('sp-text-hex').value = color;
+        selectedElement.style.color = color;
+        if (font) selectedElement.style.fontFamily = `'${font}', sans-serif`;
+        selectedElement.style.fontSize = size;
+        selectedElement.style.fontWeight = bold ? '700' : '';
+        if (bg) selectedElement.style.backgroundColor = bg;
+    }
+
+    async function builderSaveStyle() {
+        if (!selectedElementId) { bToast('❌ Элемент таңдалмаған', true); return; }
+        const fd = new FormData();
+        fd.append('element_id', selectedElementId);
+        fd.append('color', document.getElementById('sp-text-color').value);
+        fd.append('font_family', document.getElementById('sp-font').value);
+        fd.append('font_size', document.getElementById('sp-size').value + 'px');
+        fd.append('font_weight', document.getElementById('sp-bold').classList.contains('active') ? '700' : '');
+        fd.append('bg_color', document.getElementById('sp-bg-hex').value);
+        fd.append('csrfmiddlewaretoken', B_CSRF);
+        try {
+            const res = await fetch('/api/update-element-style/', { method: 'POST', body: fd, credentials: 'same-origin' });
+            const data = await res.json();
+            if (data.success) bToast('✅ Стиль сақталды!');
+            else bToast('❌ '+(data.error||'Қате'), true);
+        } catch(e) { bToast('❌ '+e.message, true); }
+    }
+
+    // ── Colors ───────────────────────────────────────────────────
+    function builderToggleColors() {
+        document.getElementById('colors-panel').classList.toggle('open');
+        document.getElementById('sections-sidebar').classList.remove('open');
+        document.getElementById('style-panel').classList.remove('open');
+    }
+
+    async function builderSaveGlobalColors() {
+        const fd = new FormData();
+        fd.append('primary_color', document.getElementById('gc-primary-hex').value.trim() || document.getElementById('gc-primary').value);
+        fd.append('accent_color', document.getElementById('gc-accent-hex').value.trim() || document.getElementById('gc-accent').value);
+        fd.append('footer_color', document.getElementById('gc-footer-hex').value.trim() || document.getElementById('gc-footer').value);
+        fd.append('csrfmiddlewaretoken', B_CSRF);
+        try {
+            const res = await fetch('/api/update-site-settings/', { method: 'POST', body: fd, credentials: 'same-origin' });
+            const data = await res.json();
+            if (data.success) bToast('✅ Түстер сақталды!');
+            else bToast('❌ '+(data.error||'Қате'), true);
+        } catch(e) { bToast('❌ '+e.message, true); }
+    }
+
+    async function builderSaveAll() {
+        await builderSaveSectionOrder();
+        bToast('✅ Барлығы сақталды!');
+    }
+
+    // ── Inline text editing ──────────────────────────────────────
+    function builderInitEditables() {
+        document.querySelectorAll('[data-editable]').forEach(el => {
+            el.setAttribute('contenteditable', 'true');
+            el.setAttribute('spellcheck', 'false');
+            el.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); el.blur(); }
+                if (e.key === 'Escape') el.blur();
+            });
+            el.addEventListener('blur', async function () {
+                const raw = el.dataset.editable;
+                const parts = raw.split(':');
+                if (parts.length < 3) return;
+                const [model, objectId, field] = parts;
+                const value = el.innerText.trim();
+                const fd = new FormData();
+                fd.append('model', model); fd.append('object_id', objectId);
+                fd.append('field', field); fd.append('value', value);
+                fd.append('csrfmiddlewaretoken', B_CSRF);
+                try {
+                    const res = await fetch('/api/update-text/', { method: 'POST', body: fd, credentials: 'same-origin' });
+                    const data = await res.json();
+                    if (data.success) bToast('✅ Мәтін сақталды!');
+                    else bToast('❌ ' + (data.error || 'Қате'), true);
+                } catch (e) { bToast('❌ ' + e.message, true); }
+            });
+        });
+        // Style click handlers
+        document.querySelectorAll('[data-styleable]').forEach(el => {
+            el.addEventListener('click', function(e) {
+                if (!document.body.classList.contains('edit-mode-active')) return;
+                builderOpenStylePanel(el);
+            });
+        });
+    }
+
+    // ── Apply saved styles ───────────────────────────────────────
+    function builderApplyStyles() {
+        Object.entries(elementStyles).forEach(([id, css]) => {
+            const el = document.querySelector(`[data-styleable="${id}"]`);
+            if (el && css) el.style.cssText += ';' + css;
+        });
+    }
+
+    function builderApplySectionSettings() {
+        sectionOrders.forEach(s => {
+            const sec = document.querySelector(`section[data-section="${s.section_key}"]`);
+            if (!sec) return;
+            if (s.bg_color) sec.style.backgroundColor = s.bg_color;
+            if (!s.is_visible) sec.style.display = 'none';
+        });
+        builderApplySectionOrder();
+    }
+
+    function rgbToHex(rgb) {
+        if (!rgb || rgb.startsWith('#')) return rgb;
+        const m = rgb.match(/\d+/g);
+        if (!m || m.length < 3) return '#333333';
+        return '#' + m.slice(0,3).map(x => parseInt(x).toString(16).padStart(2,'0')).join('');
+    }
+
+    // ── Edit mode toggle ─────────────────────────────────────────
+    const _et = document.getElementById('editModeCheckbox');
+    if (_et) {
+        _et.addEventListener('change', function () {
+            if (this.checked) {
+                builderInitEditables();
+            } else {
+                document.querySelectorAll('[data-editable]').forEach(el => el.removeAttribute('contenteditable'));
+                builderCloseStylePanel();
+                document.getElementById('sections-sidebar').classList.remove('open');
+                document.getElementById('colors-panel').classList.remove('open');
+            }
+        });
+        if (localStorage.getItem('editMode') === 'true') {
+            setTimeout(() => { builderInitEditables(); }, 100);
+        }
+    }
+
+    // Apply on load
+    builderApplyStyles();
+    builderApplySectionSettings();
+</script>
