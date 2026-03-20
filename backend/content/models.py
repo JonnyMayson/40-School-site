@@ -151,13 +151,14 @@ class SectionOrder(models.Model):
 
 
 class ElementStyle(models.Model):
-    """Stores per-element CSS styles (text color, font, size, weight, bg)."""
+    """Stores per-element CSS styles (text color, font, size, weight, bg) and text content."""
     element_id = models.CharField(max_length=100, unique=True)
     color = models.CharField(max_length=20, blank=True, default='')
     font_family = models.CharField(max_length=100, blank=True, default='')
     font_size = models.CharField(max_length=20, blank=True, default='')
     font_weight = models.CharField(max_length=20, blank=True, default='')
     bg_color = models.CharField(max_length=20, blank=True, default='')
+    text_content = models.TextField(blank=True, default='')
 
     class Meta:
         verbose_name = "Элемент стилі"
@@ -183,5 +184,8 @@ class ElementStyle(models.Model):
 
     @classmethod
     def get_all_dict(cls):
-        """Return dict of element_id -> css string."""
-        return {e.element_id: e.to_css() for e in cls.objects.all()}
+        """Return dict of element_id -> {css, text}."""
+        return {
+            e.element_id: {'css': e.to_css(), 'text': e.text_content}
+            for e in cls.objects.all()
+        }

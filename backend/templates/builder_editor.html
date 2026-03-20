@@ -489,6 +489,7 @@
         fd.append('font_size', document.getElementById('sp-size').value + 'px');
         fd.append('font_weight', document.getElementById('sp-bold').classList.contains('active') ? '700' : '');
         fd.append('bg_color', document.getElementById('sp-bg-hex').value);
+        if (selectedElement) fd.append('text_content', selectedElement.innerText.trim());
         fd.append('csrfmiddlewaretoken', B_CSRF);
         try {
             const res = await fetch('/api/update-element-style/', { method: 'POST', body: fd, credentials: 'same-origin' });
@@ -551,8 +552,31 @@
                 } catch (e) { bToast('❌ ' + e.message, true); }
             });
         });
-        // Style click handlers
+        // Style click handlers + make contenteditable for static elements
         document.querySelectorAll('[data-styleable]').forEach(el => {
+            // Only make contenteditable if NOT already handled by data-editable
+            if (!el.hasAttribute('data-editable')) {
+                el.setAttribute('contenteditable', 'true');
+                el.setAttribute('spellcheck', 'false');
+                el.addEventListener('blur', async function() {
+                    // Auto-save text when editing static elements
+                    const eid = el.dataset.styleable;
+                    const fd = new FormData();
+                    fd.append('element_id', eid);
+                    fd.append('text_content', el.innerText.trim());
+                    fd.append('csrfmiddlewaretoken', B_CSRF);
+                    try {
+                        const res = await fetch('/api/update-element-style/', { method: 'POST', body: fd, credentials: 'same-origin' });
+                        const data = await res.json();
+                        if (data.success) bToast('✅ Мәтін сақталды!');
+                        else bToast('❌ '+(data.error||'Қате'), true);
+                    } catch(e) { bToast('❌ '+e.message, true); }
+                });
+                el.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); el.blur(); }
+                    if (e.key === 'Escape') el.blur();
+                });
+            }
             el.addEventListener('click', function(e) {
                 if (!document.body.classList.contains('edit-mode-active')) return;
                 builderOpenStylePanel(el);
@@ -562,9 +586,11 @@
 
     // ── Apply saved styles ───────────────────────────────────────
     function builderApplyStyles() {
-        Object.entries(elementStyles).forEach(([id, css]) => {
+        Object.entries(elementStyles).forEach(([id, data]) => {
             const el = document.querySelector(`[data-styleable="${id}"]`);
-            if (el && css) el.style.cssText += ';' + css;
+            if (!el) return;
+            if (data.css) el.style.cssText += ';' + data.css;
+            if (data.text) el.innerText = data.text;
         });
     }
 
@@ -593,6 +619,7 @@
                 builderInitEditables();
             } else {
                 document.querySelectorAll('[data-editable]').forEach(el => el.removeAttribute('contenteditable'));
+                document.querySelectorAll('[data-styleable]:not([data-editable])').forEach(el => el.removeAttribute('contenteditable'));
                 builderCloseStylePanel();
                 document.getElementById('sections-sidebar').classList.remove('open');
                 document.getElementById('colors-panel').classList.remove('open');

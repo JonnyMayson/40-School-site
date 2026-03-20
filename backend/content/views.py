@@ -185,7 +185,7 @@ def update_element_style(request):
     if not eid:
         return JsonResponse({'error': 'Missing element_id'}, status=400)
     obj, _ = ElementStyle.objects.get_or_create(element_id=eid)
-    for field in ['color', 'font_family', 'font_size', 'font_weight', 'bg_color']:
+    for field in ['color', 'font_family', 'font_size', 'font_weight', 'bg_color', 'text_content']:
         val = request.POST.get(field)
         if val is not None:
             setattr(obj, field, val.strip())
