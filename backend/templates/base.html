@@ -537,15 +537,15 @@
                 <div class="footer-col footer-map"
                     style="border-radius: 12px; overflow: hidden; height: 200px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
                     <iframe frameborder="no" style="border:none; width:100%; height:100%;"
-                        src="https://maps.google.com/maps?q=Baizakova+59,+Almaty,+Kazakhstan&t=&z=15&ie=UTF8&iwloc=&output=embed">
-                    </iframe>
+                        src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3115.1394051573643!2d76.83315545261613!3d43.37887079589553!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNDPCsDIyJzQzLjkiTiA3NsKwNTAnMTYuOSJF!5e1!3m2!1sru!2skz!4v1773996618760!5m2!1sru!2skz"
+                        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                </div>
+
+                <div class="copyright">
+                    © 2024 Qundylyq. Барлық құқықтар қорғалған.
                 </div>
             </div>
-
-            <div class="copyright">
-                © 2024 Qundylyq. Барлық құқықтар қорғалған.
-            </div>
-        </div>
     </footer>
 
     {% if user.is_staff %}
@@ -866,22 +866,34 @@
         #gui-editor {
             display: none;
             position: fixed;
-            right: 0; top: 50%;
+            right: 0;
+            top: 50%;
             transform: translateY(-50%);
             z-index: 9998;
             width: 280px;
             background: #fff;
             border-radius: 16px 0 0 16px;
-            box-shadow: -4px 0 30px rgba(0,0,0,0.15);
+            box-shadow: -4px 0 30px rgba(0, 0, 0, 0.15);
             font-family: 'Inter', sans-serif;
             overflow: hidden;
             animation: slideInEditor 0.3s ease;
         }
+
         @keyframes slideInEditor {
-            from { transform: translateY(-50%) translateX(100%); opacity: 0; }
-            to   { transform: translateY(-50%) translateX(0);   opacity: 1; }
+            from {
+                transform: translateY(-50%) translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(-50%) translateX(0);
+                opacity: 1;
+            }
         }
-        body.edit-mode-active #gui-editor { display: block; }
+
+        body.edit-mode-active #gui-editor {
+            display: block;
+        }
 
         #gui-editor-header {
             background: linear-gradient(135deg, var(--primary), #2d9a5f);
@@ -893,10 +905,12 @@
             align-items: center;
             gap: 8px;
         }
+
         #gui-editor-tabs {
             display: flex;
             border-bottom: 1px solid #eaecf0;
         }
+
         .gui-tab {
             flex: 1;
             padding: 10px;
@@ -910,12 +924,20 @@
             transition: 0.2s;
             border-bottom: 2px solid transparent;
         }
+
         .gui-tab.active {
             color: var(--primary);
             border-bottom-color: var(--primary);
         }
-        .gui-tab-content { display: none; padding: 16px; }
-        .gui-tab-content.active { display: block; }
+
+        .gui-tab-content {
+            display: none;
+            padding: 16px;
+        }
+
+        .gui-tab-content.active {
+            display: block;
+        }
 
         .gui-field-label {
             font-size: 11px;
@@ -926,20 +948,28 @@
             margin-bottom: 6px;
             margin-top: 12px;
         }
-        .gui-field-label:first-child { margin-top: 0; }
+
+        .gui-field-label:first-child {
+            margin-top: 0;
+        }
 
         .gui-color-row {
             display: flex;
             align-items: center;
             gap: 10px;
         }
+
         .gui-color-input {
-            width: 40px; height: 40px;
-            border: none; border-radius: 8px;
-            cursor: pointer; padding: 0;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 0;
             background: none;
             flex-shrink: 0;
         }
+
         .gui-color-hex {
             flex: 1;
             border: 1px solid #e0e0e0;
@@ -949,6 +979,7 @@
             font-family: monospace;
             color: #333;
         }
+
         #gui-save-colors {
             margin-top: 16px;
             width: 100%;
@@ -962,29 +993,35 @@
             cursor: pointer;
             transition: 0.2s;
         }
-        #gui-save-colors:hover { opacity: 0.9; }
+
+        #gui-save-colors:hover {
+            opacity: 0.9;
+        }
 
         /* Editable elements */
         body.edit-mode-active [data-editable] {
-            outline: 2px dashed rgba(30,122,69,0.5);
+            outline: 2px dashed rgba(30, 122, 69, 0.5);
             outline-offset: 3px;
             border-radius: 4px;
             cursor: text;
             transition: outline 0.2s;
         }
+
         body.edit-mode-active [data-editable]:hover {
             outline: 2px solid var(--primary);
-            background: rgba(30,122,69,0.04);
+            background: rgba(30, 122, 69, 0.04);
         }
+
         body.edit-mode-active [data-editable]:focus {
             outline: 2px solid var(--primary);
-            background: rgba(30,122,69,0.06);
+            background: rgba(30, 122, 69, 0.06);
         }
 
         /* Toast */
         #gui-toast {
             position: fixed;
-            bottom: 30px; left: 50%;
+            bottom: 30px;
+            left: 50%;
             transform: translateX(-50%) translateY(20px);
             background: #1e7a45;
             color: #fff;
@@ -996,8 +1033,9 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s, transform 0.3s;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
+
         #gui-toast.show {
             opacity: 1;
             transform: translateX(-50%) translateY(0);
@@ -1068,7 +1106,8 @@
             </div>
             <div class="gui-tip">
                 🎨 <strong>Түстер:</strong><br>
-                «Түстер» бетінде color picker арқылы негізгі, акцент және футер түстерін таңдап, «Сақтау» батырмасын басыңыз.
+                «Түстер» бетінде color picker арқылы негізгі, акцент және футер түстерін таңдап, «Сақтау» батырмасын
+                басыңыз.
             </div>
             <div class="gui-tip">
                 📷 <strong>Суреттер:</strong><br>
@@ -1103,16 +1142,16 @@
         // ── Color preview (live) ──────────────────────────────────────────
         function guiPreviewColor(key, value) {
             const hexMap = { primary: 'hex-primary', accent: 'hex-accent', footer: 'hex-footer' };
-            const cpMap  = { primary: 'cp-primary',  accent: 'cp-accent',  footer: 'cp-footer'  };
+            const cpMap = { primary: 'cp-primary', accent: 'cp-accent', footer: 'cp-footer' };
             const cssMap = {
                 primary: '--primary',
-                accent:  '--accent',
-                footer:  null   // footer uses direct style on footer element
+                accent: '--accent',
+                footer: null   // footer uses direct style on footer element
             };
             // Sync picker ↔ hex input
             if (value.startsWith('#')) {
                 document.getElementById(hexMap[key]).value = value;
-                document.getElementById(cpMap[key]).value  = value;
+                document.getElementById(cpMap[key]).value = value;
             }
             // Live CSS preview
             if (cssMap[key]) {
@@ -1124,7 +1163,7 @@
         }
 
         // Apply saved colors on load
-        (function() {
+        (function () {
             {% if site_settings %}
             const pc = '{{ site_settings.primary_color }}';
             const ac = '{{ site_settings.accent_color }}';
@@ -1141,13 +1180,13 @@
         // ── Save colors ───────────────────────────────────────────────────
         async function guiSaveColors() {
             const primary = document.getElementById('hex-primary').value.trim();
-            const accent  = document.getElementById('hex-accent').value.trim();
-            const footer  = document.getElementById('hex-footer').value.trim();
+            const accent = document.getElementById('hex-accent').value.trim();
+            const footer = document.getElementById('hex-footer').value.trim();
 
             const fd = new FormData();
             fd.append('primary_color', primary);
-            fd.append('accent_color',  accent);
-            fd.append('footer_color',  footer);
+            fd.append('accent_color', accent);
+            fd.append('footer_color', footer);
             fd.append('csrfmiddlewaretoken', GUI_CSRF);
 
             const btn = document.getElementById('gui-save-colors');
@@ -1158,7 +1197,7 @@
                 const data = await res.json();
                 if (data.success) guiToast('✅ Түстер сақталды!');
                 else guiToast('❌ Қате: ' + (data.error || 'Unknown'), true);
-            } catch(e) {
+            } catch (e) {
                 guiToast('❌ ' + e.message, true);
             }
             btn.textContent = '💾 Сақтау';
@@ -1171,7 +1210,7 @@
                 el.setAttribute('contenteditable', 'true');
                 el.setAttribute('spellcheck', 'false');
 
-                el.addEventListener('keydown', function(e) {
+                el.addEventListener('keydown', function (e) {
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
                         el.blur();
@@ -1181,8 +1220,8 @@
                     }
                 });
 
-                el.addEventListener('blur', async function() {
-                    const raw   = el.dataset.editable;           // "model:id:field"
+                el.addEventListener('blur', async function () {
+                    const raw = el.dataset.editable;           // "model:id:field"
                     const parts = raw.split(':');
                     if (parts.length < 3) return;
                     const [model, objectId, field] = parts;
@@ -1196,11 +1235,11 @@
                     fd.append('csrfmiddlewaretoken', GUI_CSRF);
 
                     try {
-                        const res  = await fetch('/api/update-text/', { method: 'POST', body: fd });
+                        const res = await fetch('/api/update-text/', { method: 'POST', body: fd });
                         const data = await res.json();
                         if (data.success) guiToast('✅ Мәтін сақталды!');
                         else guiToast('❌ ' + (data.error || 'Қате'), true);
-                    } catch(e) {
+                    } catch (e) {
                         guiToast('❌ ' + e.message, true);
                     }
                 });
@@ -1210,7 +1249,7 @@
         // Toggle: enable/disable contenteditable based on edit mode
         const _editToggle = document.getElementById('editModeCheckbox');
         if (_editToggle) {
-            _editToggle.addEventListener('change', function() {
+            _editToggle.addEventListener('change', function () {
                 if (this.checked) {
                     guiInitEditables();
                 } else {
