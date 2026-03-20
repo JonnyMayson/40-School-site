@@ -164,6 +164,20 @@ def update_section_bg(request):
 
 @staff_member_required
 @require_POST
+def update_section_card_bg(request):
+    """Update card background color for all cards in a section."""
+    key = request.POST.get('section_key', '').strip()
+    color = request.POST.get('card_bg_color', '').strip()
+    if not key:
+        return JsonResponse({'error': 'Missing section_key'}, status=400)
+    obj, _ = SectionOrder.objects.get_or_create(section_key=key)
+    obj.card_bg_color = color
+    obj.save(update_fields=['card_bg_color'])
+    return JsonResponse({'success': True})
+
+
+@staff_member_required
+@require_POST
 def toggle_section(request):
     """Toggle visibility of a section."""
     key = request.POST.get('section_key', '').strip()

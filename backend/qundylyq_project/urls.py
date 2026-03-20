@@ -36,6 +36,7 @@ urlpatterns = [
     path('api/update-section-bg/', views.update_section_bg, name='update_section_bg'),
     path('api/toggle-section/', views.toggle_section, name='toggle_section'),
     path('api/update-element-style/', views.update_element_style, name='update_element_style'),
+    path('api/update-section-card-bg/', views.update_section_card_bg, name='update_section_card_bg'),
     path('api/create-element/', views.create_element, name='create_element'),
     path('api/delete-element/', views.delete_element, name='delete_element'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

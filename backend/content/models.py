@@ -125,6 +125,7 @@ class SectionOrder(models.Model):
     section_key = models.CharField(max_length=50, unique=True)
     order = models.IntegerField(default=0)
     bg_color = models.CharField(max_length=20, blank=True, default='')
+    card_bg_color = models.CharField(max_length=20, blank=True, default='')
     is_visible = models.BooleanField(default=True)
 
     class Meta:
@@ -147,7 +148,7 @@ class SectionOrder(models.Model):
             if key not in existing:
                 cls.objects.create(section_key=key, order=default_order)
         sections = cls.objects.all().order_by('order')
-        return list(sections.values('section_key', 'order', 'bg_color', 'is_visible'))
+        return list(sections.values('section_key', 'order', 'bg_color', 'card_bg_color', 'is_visible'))
 
 
 class ElementStyle(models.Model):

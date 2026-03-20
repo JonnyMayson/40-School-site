@@ -324,6 +324,7 @@
                 <span class="section-name">${SECTION_NAMES[s.section_key]||s.section_key}</span>
                 <div class="section-actions">
                     <button title="Фон түсі" onclick="builderEditSectionBg('${s.section_key}')">🎨</button>
+                    <button title="Карточка фоны" onclick="builderEditCardBg('${s.section_key}')">🃏</button>
                     <button title="${s.is_visible?'Жасыру':'Көрсету'}" onclick="builderToggleSection('${s.section_key}')">
                         ${s.is_visible?'👁️':'🚫'}
                     </button>
@@ -389,7 +390,7 @@
     }
 
     function builderEditSectionBg(key) {
-        const sec = document.querySelector(`section[data-section="${key}"]`);
+        const sec = document.querySelector(`section[data-section="${key}"]`) || document.querySelector(`header[data-section="${key}"]`) || document.querySelector(`footer[data-section="${key}"]`);
         if (!sec) return;
         const color = prompt('Фон түсін енгізіңіз (мыс. #f0f4f8):', sec.style.backgroundColor || '');
         if (color === null) return;
@@ -397,6 +398,27 @@
         const fd = new FormData(); fd.append('section_key', key); fd.append('bg_color', color); fd.append('csrfmiddlewaretoken', B_CSRF);
         fetch('/api/update-section-bg/', { method: 'POST', body: fd, credentials: 'same-origin' })
         .then(r => r.json()).then(d => { if (d.success) bToast('✅ Фон сақталды!'); }).catch(e => bToast('❌ '+e.message, true));
+    }
+
+    function builderEditCardBg(key) {
+        const sec = document.querySelector(`section[data-section="${key}"]`);
+        if (!sec) return;
+        const color = prompt('Карточка фонын енгізіңіз (мыс. #e8f5e9 немесе бос = әдепкі):', '');
+        if (color === null) return;
+        // Apply to all cards within this section
+        sec.querySelectorAll('.card, .team-category-card, .swiper-slide, .project-slide').forEach(card => {
+            card.style.backgroundColor = color;
+        });
+        // Save via API
+        const fd = new FormData();
+        fd.append('section_key', key);
+        fd.append('card_bg_color', color);
+        fd.append('csrfmiddlewaretoken', B_CSRF);
+        fetch('/api/update-section-card-bg/', { method: 'POST', body: fd, credentials: 'same-origin' })
+        .then(r => r.json()).then(d => {
+            if (d.success) bToast('✅ Карточка фоны сақталды!');
+            else bToast('❌ '+(d.error||'Қате'), true);
+        }).catch(e => bToast('❌ '+e.message, true));
     }
 
     async function builderToggleSection(key) {
@@ -596,10 +618,16 @@
 
     function builderApplySectionSettings() {
         sectionOrders.forEach(s => {
-            const sec = document.querySelector(`section[data-section="${s.section_key}"]`);
+            const sec = document.querySelector(`section[data-section="${s.section_key}"]`) || document.querySelector(`header[data-section="${s.section_key}"]`) || document.querySelector(`footer[data-section="${s.section_key}"]`);
             if (!sec) return;
             if (s.bg_color) sec.style.backgroundColor = s.bg_color;
             if (!s.is_visible) sec.style.display = 'none';
+            // Apply card backgrounds
+            if (s.card_bg_color) {
+                sec.querySelectorAll('.card, .team-category-card, .swiper-slide, .project-slide').forEach(card => {
+                    card.style.backgroundColor = s.card_bg_color;
+                });
+            }
         });
         builderApplySectionOrder();
     }
