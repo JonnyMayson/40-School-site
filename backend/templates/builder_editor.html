@@ -277,11 +277,13 @@
 <script>
     const B_CSRF = '{{ csrf_token }}';
     const SECTION_NAMES = {
+        header: '📌 Хэдер (Header)',
         hero: '🏠 Басты экран (Hero)',
         stats: '📊 Статистика',
         principles: '📋 Қағидалар',
         projects: '🎯 Жобалар',
-        team: '👥 Команда'
+        team: '👥 Команда',
+        footer: '🔻 Футер (Footer)'
     };
 
     function bToast(msg, isError) {
@@ -306,11 +308,13 @@
     function builderRenderSections() {
         if (!sectionOrders.length) {
             sectionOrders = [
-                {section_key:'hero',order:0,bg_color:'',is_visible:true},
-                {section_key:'stats',order:1,bg_color:'',is_visible:true},
-                {section_key:'principles',order:2,bg_color:'',is_visible:true},
-                {section_key:'projects',order:3,bg_color:'',is_visible:true},
-                {section_key:'team',order:4,bg_color:'',is_visible:true},
+                {section_key:'header', order:-1, bg_color:'', is_visible:true},
+                {section_key:'hero', order:0, bg_color:'', is_visible:true},
+                {section_key:'stats', order:1, bg_color:'', is_visible:true},
+                {section_key:'principles', order:2, bg_color:'', is_visible:true},
+                {section_key:'projects', order:3, bg_color:'', is_visible:true},
+                {section_key:'team', order:4, bg_color:'', is_visible:true},
+                {section_key:'footer', order:99, bg_color:'', is_visible:true},
             ];
         }
         sectionOrders.sort((a,b) => a.order - b.order);

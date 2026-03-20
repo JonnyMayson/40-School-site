@@ -1,4 +1,4 @@
-﻿{% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 
@@ -447,16 +447,16 @@
 
 <body>
 
-    <header>
+    <header data-section="header">
         <div class="container nav-wrapper">
-            <div class="logo">QUNDYLYQ<span>.</span></div>
+            <div class="logo" data-styleable="header-logo">QUNDYLYQ<span>.</span></div>
             <nav>
                 <ul class="menu">
-                    <li><a href="{% url 'index' %}">Басты бет</a></li>
-                    <li><a href="#">Біз туралы</a></li>
-                    <li><a href="#">Жобалар</a></li>
-                    <li><a href="{% url 'news_list' %}">Жаңалықтар</a></li>
-                    <li><a href="#">Контакты</a></li>
+                    <li><a href="{% url 'index' %}" data-styleable="header-menu-1">Басты бет</a></li>
+                    <li><a href="#" data-styleable="header-menu-2">Біз туралы</a></li>
+                    <li><a href="#" data-styleable="header-menu-3">Жобалар</a></li>
+                    <li><a href="{% url 'news_list' %}" data-styleable="header-menu-4">Жаңалықтар</a></li>
+                    <li><a href="#" data-styleable="header-menu-5">Контакты</a></li>
                 </ul>
             </nav>
             <div class="header-actions">
@@ -491,8 +491,8 @@
                     </style>
                 </div>
                 {% endif %}
-                <span class="lang-switch">RU | KZ</span>
-                <a href="https://wa.me/77473878338" target="_blank" rel="noopener" class="btn btn-primary">Кеңес алу</a>
+                <span class="lang-switch" data-styleable="header-lang">RU | KZ</span>
+                <a href="https://wa.me/77473878338" target="_blank" rel="noopener" class="btn btn-primary" data-styleable="header-cta">Кеңес алу</a>
             </div>
         </div>
     </header>
@@ -500,37 +500,37 @@
     {% block content %}
     {% endblock %}
 
-    <footer>
+    <footer data-section="footer">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
-                    <a href="#" class="footer-logo">QUNDYLYQ</a>
-                    <p style="color: #98a2b3; font-size: 14px; line-height: 1.6;">
+                    <a href="#" class="footer-logo" data-styleable="footer-logo">QUNDYLYQ</a>
+                    <p style="color: #98a2b3; font-size: 14px; line-height: 1.6;" data-styleable="footer-desc">
                         Қазақстандағы кәсісіптік білім беру және консалтинг орталығы.
                     </p>
                 </div>
                 <div class="footer-col">
-                    <h4>Компания</h4>
+                    <h4 data-styleable="footer-col1-title">Компания</h4>
                     <ul>
-                        <li><a href="#">Біз туралы</a></li>
-                        <li><a href="#">Жобалар</a></li>
-                        <li><a href="#">Команда</a></li>
+                        <li><a href="#" data-styleable="footer-col1-link1">Біз туралы</a></li>
+                        <li><a href="#" data-styleable="footer-col1-link2">Жобалар</a></li>
+                        <li><a href="#" data-styleable="footer-col1-link3">Команда</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
-                    <h4>Ресурстар</h4>
+                    <h4 data-styleable="footer-col2-title">Ресурстар</h4>
                     <ul>
-                        <li><a href="#">Блог</a></li>
-                        <li><a href="#">Көмек</a></li>
-                        <li><a href="#">Сертификаттар</a></li>
+                        <li><a href="#" data-styleable="footer-col2-link1">Блог</a></li>
+                        <li><a href="#" data-styleable="footer-col2-link2">Көмек</a></li>
+                        <li><a href="#" data-styleable="footer-col2-link3">Сертификаттар</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
-                    <h4>Байланыс</h4>
+                    <h4 data-styleable="footer-col3-title">Байланыс</h4>
                     <ul>
-                        <li><a href="#">info@qundylyq.kz</a></li>
-                        <li><a href="#">+7 (700) 000 00 00</a></li>
-                        <li><a href="#">Астана қ.</a></li>
+                        <li><a href="#" data-styleable="footer-col3-link1">info@qundylyq.kz</a></li>
+                        <li><a href="#" data-styleable="footer-col3-link2">+7 (700) 000 00 00</a></li>
+                        <li><a href="#" data-styleable="footer-col3-link3">Астана қ.</a></li>
                     </ul>
                 </div>
                 <!-- Map Section (Moved Inside Grid) -->
@@ -545,7 +545,7 @@
                 </div>
             </div>
 
-            <div class="copyright">
+            <div class="copyright" data-styleable="footer-copyright">
                 © 2024 Qundylyq. Барлық құқықтар қорғалған.
             </div>
         </div>

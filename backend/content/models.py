@@ -139,8 +139,8 @@ class SectionOrder(models.Model):
     def get_ordered(cls):
         """Return dict of section_key -> {order, bg_color, is_visible}."""
         defaults = [
-            ('hero', 0), ('stats', 1), ('principles', 2),
-            ('projects', 3), ('team', 4),
+            ('header', -1), ('hero', 0), ('stats', 1), ('principles', 2),
+            ('projects', 3), ('team', 4), ('footer', 99),
         ]
         existing = {s.section_key: s for s in cls.objects.all()}
         for key, default_order in defaults:
