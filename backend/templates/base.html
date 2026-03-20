@@ -536,16 +536,19 @@
                 <!-- Map Section (Moved Inside Grid) -->
                 <div class="footer-col footer-map"
                     style="border-radius: 12px; overflow: hidden; height: 200px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
-                    <iframe frameborder="no" style="border:none; width:100%; height:100%;"
+                    <iframe
                         src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3115.1394051573643!2d76.83315545261613!3d43.37887079589553!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNDPCsDIyJzQzLjkiTiA3NsKwNTAnMTYuOSJF!5e1!3m2!1sru!2skz!4v1773996618760!5m2!1sru!2skz"
-                        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                        width="600" height="450" style="border:0; width:100%; height:100%;"
+                        allowfullscreen="" loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade">
-                </div>
-
-                <div class="copyright">
-                    © 2024 Qundylyq. Барлық құқықтар қорғалған.
+                    </iframe>
                 </div>
             </div>
+
+            <div class="copyright">
+                © 2024 Qundylyq. Барлық құқықтар қорғалған.
+            </div>
+        </div>
     </footer>
 
     {% if user.is_staff %}
