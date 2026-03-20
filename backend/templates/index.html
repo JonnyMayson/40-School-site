@@ -14,7 +14,7 @@
                 class="admin-edit-btn" target="_blank">➕ Create Hero (Edit Default)</a>
             {% endif %}
             {% endif %}
-            <div style="color: var(--accent); font-weight: 600; margin-bottom: 10px;">БІЛІМ БЕРУ ОРТАЛЫҒЫ</div>
+            <div style="color: #074320; font-weight: 600; margin-bottom: 10px;">БІЛІМ БЕРУ ОРТАЛЫҒЫ</div>
             <h1 class="hero-title">
                 {% if hero_block and hero_block.title %}
                 {{ hero_block.title }}
@@ -43,6 +43,7 @@
                 style="z-index:10; top:40px;">✏️ Edit</a>
             {% if hero_block.image %}
             <button onclick="removeImage('heroblock','{{ hero_block.id }}','image')"
+                class="admin-edit-btn"
                 style="position:absolute;top:8px;left:8px;z-index:20;background:rgba(220,38,38,0.85);color:#fff;border:none;border-radius:50%;width:28px;height:28px;font-size:16px;cursor:pointer;line-height:1;"
                 title="Суретті жою">&#x2715;</button>
             {% endif %}

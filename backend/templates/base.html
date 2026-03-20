@@ -284,6 +284,11 @@
             transform: translate(-50%, -50%);
             color: #777;
             font-weight: 700;
+            display: none;
+        }
+
+        body.edit-mode-active .hero-img::before {
+            display: block;
         }
 
         .stats {
@@ -303,7 +308,7 @@
         .stat-item h3 {
             font-size: 48px;
             font-weight: 700;
-            color: var(--accent);
+            color: #074320;
             margin-bottom: 10px;
         }
 
