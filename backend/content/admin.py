@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import PhotoBlock, HeroBlock, PrincipleBlock, TeamMember, TeamCategory, NewsArticle
+from .models import PhotoBlock, HeroBlock, PrincipleBlock, TeamMember, TeamCategory, NewsArticle, SiteSettings
 
 @admin.register(PhotoBlock)
 class PhotoBlockAdmin(admin.ModelAdmin):
@@ -57,3 +57,15 @@ class NewsArticleAdmin(admin.ModelAdmin):
         if obj.card_image:
             return format_html('<img src="{}" style="max-height: 50px;"/>', obj.card_image)
         return "-"
+
+
+@admin.register(SiteSettings)
+class SiteSettingsAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'primary_color', 'accent_color', 'footer_color')
+
+    def has_add_permission(self, request):
+        # Only one record allowed
+        return not SiteSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False

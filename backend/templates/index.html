@@ -17,14 +17,14 @@
             <div style="color: #074320; font-weight: 600; margin-bottom: 10px;">БІЛІМ БЕРУ ОРТАЛЫҒЫ</div>
             <h1 class="hero-title">
                 {% if hero_block and hero_block.title %}
-                {{ hero_block.title }}
+                <span {% if user.is_staff %}data-editable="heroblock:{{ hero_block.id }}:title"{% endif %}>{{ hero_block.title }}</span>
                 {% else %}
                 Мектептегі оқу-тәрбие процестерін бізбен бірге реттеңіз
                 {% endif %}
             </h1>
             <p class="hero-desc">
                 {% if hero_block and hero_block.description %}
-                {{ hero_block.description }}
+                <span {% if user.is_staff %}data-editable="heroblock:{{ hero_block.id }}:description"{% endif %}>{{ hero_block.description }}</span>
                 {% else %}
                 Qundylyq — «Білім-инновация» лицейлерінің табысты тәжірибесіне негізделген құндылыққа бағытталған
                 білім беруді енгізуге көмектесеміз.

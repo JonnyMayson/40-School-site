@@ -91,3 +91,30 @@ class NewsArticle(models.Model):
         verbose_name = "Жаңалық (News)"
         verbose_name_plural = "Жаңалықтар (News)"
         ordering = ['-publish_date']
+
+
+class SiteSettings(models.Model):
+    primary_color = models.CharField(
+        max_length=20, default='#1e7a45',
+        verbose_name="Негізгі түс (Primary Color)"
+    )
+    accent_color = models.CharField(
+        max_length=20, default='#2e90fa',
+        verbose_name="Акцент түсі (Accent Color)"
+    )
+    footer_color = models.CharField(
+        max_length=20, default='#0f3d23',
+        verbose_name="Футер фоны (Footer Color)"
+    )
+
+    def __str__(self):
+        return "Сайт настройкалары"
+
+    class Meta:
+        verbose_name = "Сайт настройкалары"
+        verbose_name_plural = "Сайт настройкалары"
+
+    @classmethod
+    def get(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj

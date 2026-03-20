@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib.admin.views.decorators import staff_member_required
-from .models import PhotoBlock, HeroBlock, PrincipleBlock, TeamCategory, TeamMember, NewsArticle
+from .models import PhotoBlock, HeroBlock, PrincipleBlock, TeamCategory, TeamMember, NewsArticle, SiteSettings
 
 ALLOWED_MODELS = {
     'heroblock': (HeroBlock, ['image']),
@@ -10,6 +10,15 @@ ALLOWED_MODELS = {
     'teamcategory': (TeamCategory, ['image']),
     'teammember': (TeamMember, ['image']),
     'newsarticle': (NewsArticle, ['card_image']),
+}
+
+ALLOWED_TEXT_FIELDS = {
+    'heroblock':    (HeroBlock,    ['title', 'description']),
+    'photoblock':   (PhotoBlock,   ['title', 'description', 'tag', 'order']),
+    'teamcategory': (TeamCategory, ['title', 'description', 'order']),
+    'teammember':   (TeamMember,   ['name', 'position', 'description', 'order']),
+    'principleblock': (PrincipleBlock, ['title', 'description', 'order']),
+    'newsarticle':  (NewsArticle,  ['title', 'subtitle', 'short_description', 'full_content']),
 }
 
 @staff_member_required
@@ -71,22 +80,57 @@ def clear_image_url(request):
     except model_class.DoesNotExist:
         return JsonResponse({'error': 'Object not found'}, status=404)
 
+
+@staff_member_required
+@require_POST
+def update_text(request):
+    """Update a text field for any allowed model."""
+    model_name = request.POST.get('model', '').lower()
+    object_id  = request.POST.get('object_id')
+    field_name = request.POST.get('field')
+    value      = request.POST.get('value', '').strip()
+
+    if model_name not in ALLOWED_TEXT_FIELDS:
+        return JsonResponse({'error': 'Unknown model'}, status=400)
+
+    model_class, allowed_fields = ALLOWED_TEXT_FIELDS[model_name]
+    if field_name not in allowed_fields:
+        return JsonResponse({'error': 'Field not allowed'}, status=400)
+
+    try:
+        obj = model_class.objects.get(pk=object_id)
+        setattr(obj, field_name, value)
+        obj.save(update_fields=[field_name])
+        return JsonResponse({'success': True})
+    except model_class.DoesNotExist:
+        return JsonResponse({'error': 'Object not found'}, status=404)
+
+
+@staff_member_required
+@require_POST
+def update_site_settings(request):
+    """Update global site colors."""
+    settings = SiteSettings.get()
+    for field in ['primary_color', 'accent_color', 'footer_color']:
+        val = request.POST.get(field, '').strip()
+        if val and val.startswith('#') and len(val) in (4, 7):
+            setattr(settings, field, val)
+    settings.save()
+    return JsonResponse({'success': True})
+
 def index(request):
-    blocks = PhotoBlock.objects.all().order_by('order')  # Fetch all blocks ordered by 'order'
-    
-    # Get active hero block
+    blocks = PhotoBlock.objects.all().order_by('order')
     hero_block = HeroBlock.objects.filter(is_active=True).first()
-    
     principles = PrincipleBlock.objects.all().order_by('order')
-    
-    # Fetch categories for the team section
     team_categories = TeamCategory.objects.all().order_by('order')
+    site_settings = SiteSettings.get()
 
     return render(request, 'index.html', {
-        'blocks': blocks, 
+        'blocks': blocks,
         'hero_block': hero_block,
         'principles': principles,
         'team_categories': team_categories,
+        'site_settings': site_settings,
     })
 
 def team_detail(request, category_id):

@@ -30,4 +30,6 @@ urlpatterns = [
     path('api/update-image/', views.update_image_url, name='update_image_url'),
     path('api/create-hero/', views.create_hero_block, name='create_hero_block'),
     path('api/clear-image/', views.clear_image_url, name='clear_image_url'),
+    path('api/update-text/', views.update_text, name='update_text'),
+    path('api/update-site-settings/', views.update_site_settings, name='update_site_settings'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
