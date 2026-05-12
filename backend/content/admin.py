@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import PhotoBlock, HeroBlock, PrincipleBlock, TeamMember, TeamCategory, NewsArticle, SiteSettings, SectionOrder, ElementStyle
+from .models import PhotoBlock, HeroBlock, PrincipleBlock, VideoBlock, TeamMember, TeamCategory, NewsArticle, SiteSettings, SectionOrder, ElementStyle
 
 @admin.register(PhotoBlock)
 class PhotoBlockAdmin(admin.ModelAdmin):
@@ -82,3 +82,11 @@ class SectionOrderAdmin(admin.ModelAdmin):
 class ElementStyleAdmin(admin.ModelAdmin):
     list_display = ('element_id', 'color', 'font_family', 'font_size', 'font_weight')
     search_fields = ('element_id',)
+
+
+@admin.register(VideoBlock)
+class VideoBlockAdmin(admin.ModelAdmin):
+    list_display = ('title', 'position', 'order', 'youtube_url')
+    list_editable = ('position', 'order')
+    list_filter = ('position',)
+    search_fields = ('title',)

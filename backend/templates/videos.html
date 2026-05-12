@@ -140,6 +140,7 @@
         transition: transform 0.3s, box-shadow 0.3s;
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
     }
 
     .video-card:hover {
@@ -241,6 +242,64 @@
         border: none;
     }
 
+    /* Edit button styles for video cards on dark bg */
+    .video-edit-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        z-index: 10;
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--primary);
+        border: none;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.2s;
+    }
+
+    .video-edit-btn:hover {
+        background: #fff;
+        transform: scale(1.05);
+    }
+
+    .video-edit-btn.delete {
+        top: 40px;
+        background: rgba(220, 38, 38, 0.9);
+        color: #fff;
+    }
+
+    .video-add-card {
+        min-width: 320px;
+        max-width: 320px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px dashed rgba(255, 255, 255, 0.3);
+        border-radius: 16px;
+        min-height: 280px;
+        flex-shrink: 0;
+    }
+
+    .video-add-card a {
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.6);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+    }
+
+    .video-add-card a span:first-child {
+        font-size: 40px;
+    }
+
     /* Responsive */
     @media (max-width: 900px) {
         .videos-hero h1 {
@@ -299,12 +358,26 @@
 <!-- ═══ Featured Video ═══ -->
 <section class="featured-video-section">
     <div class="container">
-        <div class="featured-video-wrapper">
+        <div class="featured-video-wrapper" style="position:relative;">
+            {% if user.is_staff %}
+            {% if featured_video %}
+            <a href="{% url 'admin:content_videoblock_change' featured_video.id %}" class="video-edit-btn" target="_blank">✏️ Өзгерту</a>
+            {% else %}
+            <a href="{% url 'admin:content_videoblock_add' %}?position=featured" class="video-edit-btn" target="_blank">➕ Басты видео қосу</a>
+            {% endif %}
+            {% endif %}
             <div class="featured-video-frame">
+                {% if featured_video %}
+                <iframe src="{{ featured_video.youtube_url }}?rel=0" title="{{ featured_video.title }}"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+                {% else %}
                 <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ?rel=0" title="QUNDYLYQ.KZ"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen>
                 </iframe>
+                {% endif %}
             </div>
             <!-- Decorative green arrow -->
             <div class="decorative-arrow">
@@ -322,7 +395,7 @@
 <section class="video-cards-section">
     <div class="container">
         <div class="video-cards-header">
-            <h2>Басқа видеолар</h2>
+            <h2 data-editable="videoblock:section:title">Басқа видеолар</h2>
             <div class="video-cards-nav">
                 <button onclick="scrollVideoCards(-1)" aria-label="Previous">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -340,59 +413,68 @@
         </div>
 
         <div class="video-cards-scroll" id="videoCardsScroll">
-            <!-- Card 1 -->
+            {% for video in video_cards %}
+            <div class="video-card">
+                {% if user.is_staff %}
+                <a href="{% url 'admin:content_videoblock_change' video.id %}" class="video-edit-btn" target="_blank">✏️ Өзгерту</a>
+                <button class="video-edit-btn delete" onclick="if(confirm('Жоюды растайсыз ба?')) { fetch('/api/delete-element/', {method:'POST', headers:{'Content-Type':'application/json','X-CSRFToken':'{{ csrf_token }}'}, body:JSON.stringify({model:'videoblock',id:'{{ video.id }}'})}).then(()=>location.reload()) }">🗑️</button>
+                {% endif %}
+                <div class="video-card-thumbnail">
+                    <iframe src="{{ video.youtube_url }}?rel=0" title="{{ video.title }}" allowfullscreen></iframe>
+                </div>
+                <div class="video-card-body">
+                    <h3 data-editable="videoblock:{{ video.id }}:title">{{ video.title }}</h3>
+                    <p data-editable="videoblock:{{ video.id }}:description">{{ video.description }}</p>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Default cards when DB is empty -->
             <div class="video-card">
                 <div class="video-card-thumbnail">
-                    <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ?rel=0" title="Көк тудың желбірегені"
-                        allowfullscreen></iframe>
+                    <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ?rel=0" title="Көк тудың желбірегені" allowfullscreen></iframe>
                 </div>
                 <div class="video-card-body">
                     <h3>Көк тудың желбірегені</h3>
-                    <p>Нәтижеге жету үшін ең бірінші не қажет деп ойлайсыз? Әрине бірлік! Өзгелермен бір мақсатта
-                        жасалыңқы жасаспайсыз? Ел бірлігін сақтау мол сеніздің даңынына вес үлесіміді қосу
-                        ынтымақтастық.</p>
+                    <p>Нәтижеге жету үшін ең бірінші не қажет деп ойлайсыз? Әрине бірлік! Ел бірлігін сақтау — ынтымақтастық.</p>
                 </div>
             </div>
-
-            <!-- Card 2 -->
             <div class="video-card">
                 <div class="video-card-thumbnail">
-                    <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ?rel=0" title="Берекелі дастарқан"
-                        allowfullscreen></iframe>
+                    <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ?rel=0" title="Берекелі дастарқан" allowfullscreen></iframe>
                 </div>
                 <div class="video-card-body">
                     <h3>Берекелі дастарқан</h3>
-                    <p>Сізге қонақ келсе, қонақтың жағдайын жасаңызбы? Оз қалауыңдағы горі қонақтың қалауын жоғары қою
-                        алассіз ба? Жомарттық – қол мол кеңілді дыбыстырын көрсететін адамның ен жоғарғы қасиеті.</p>
+                    <p>Жомарттық – адамның ең жоғарғы қасиеті. Қонақ күту — қазақ халқының дәстүрі.</p>
                 </div>
             </div>
-
-            <!-- Card 3 -->
             <div class="video-card">
                 <div class="video-card-thumbnail">
-                    <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ?rel=0" title="Эй, чу-чу"
-                        allowfullscreen></iframe>
+                    <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ?rel=0" title="Эй, чу-чу" allowfullscreen></iframe>
                 </div>
                 <div class="video-card-body">
                     <h3>ЭЙ, ЧУ-ЧУ</h3>
-                    <p>Сіз отмінідде алған шашымізді сонына дейін жеткізетін бо? Қандай кодарпріслого тон болдыңыз?
-                        Мақсатта жеткенмоі соамыңыз қандай болды? Әр адама өмірде ез орнын табу үшін көбір қасиетсеі іс.
-                    </p>
+                    <p>Әр адамға өмірде өз орнын табу үшін мақсатқа ұмтылу қажет.</p>
                 </div>
             </div>
-
-            <!-- Card 4 -->
             <div class="video-card">
                 <div class="video-card-thumbnail">
-                    <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ?rel=0" title="Идеальная жизнь"
-                        allowfullscreen></iframe>
+                    <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ?rel=0" title="Идеальная жизнь" allowfullscreen></iframe>
                 </div>
                 <div class="video-card-body">
                     <h3>Идеальная жизнь</h3>
-                    <p>Как вы думаете, какой жизни? Счастливо ли Достигато ли мы пашей жизни на – мышлений? Принудерсе
-                        не нел що жаңалық разговор по дулмаці которая нас но бе coto с.</p>
+                    <p>Адамның ойлау жүйесін өзгерту — өмірді өзгертудің бірінші қадамы.</p>
                 </div>
             </div>
+            {% endfor %}
+
+            {% if user.is_staff %}
+            <div class="video-add-card">
+                <a href="{% url 'admin:content_videoblock_add' %}?position=card" target="_blank">
+                    <span>➕</span>
+                    <span>Видео қосу</span>
+                </a>
+            </div>
+            {% endif %}
         </div>
 
         <!-- YouTube Button -->
@@ -410,13 +492,27 @@
 
 <!-- ═══ School Video Section ═══ -->
 <section class="school-video-section">
-    <div class="container">
-        <h2>Құндылықтарға негізделген мектеп жайлы</h2>
+    <div class="container" style="position:relative;">
+        {% if user.is_staff %}
+        {% if school_video %}
+        <a href="{% url 'admin:content_videoblock_change' school_video.id %}" class="video-edit-btn" style="top:-10px;" target="_blank">✏️ Өзгерту</a>
+        {% else %}
+        <a href="{% url 'admin:content_videoblock_add' %}?position=school" class="video-edit-btn" style="top:-10px;" target="_blank">➕ Мектеп видеосын қосу</a>
+        {% endif %}
+        {% endif %}
+        <h2>{% if school_video %}{{ school_video.title }}{% else %}Құндылықтарға негізделген мектеп жайлы{% endif %}</h2>
         <div class="school-video-frame">
+            {% if school_video %}
+            <iframe src="{{ school_video.youtube_url }}?rel=0" title="{{ school_video.title }}"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+            {% else %}
             <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ?rel=0" title="Құндылықтарға негізделген мектеп жайлы"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowfullscreen>
             </iframe>
+            {% endif %}
         </div>
     </div>
 </section>

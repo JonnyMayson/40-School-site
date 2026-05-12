@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib.admin.views.decorators import staff_member_required
 from .models import (
-    PhotoBlock, HeroBlock, PrincipleBlock, TeamCategory, TeamMember,
+    PhotoBlock, HeroBlock, PrincipleBlock, VideoBlock, TeamCategory, TeamMember,
     NewsArticle, SiteSettings, SectionOrder, ElementStyle
 )
 
@@ -24,6 +24,7 @@ ALLOWED_TEXT_FIELDS = {
     'teammember':     (TeamMember,      ['name', 'position', 'description', 'order']),
     'principleblock': (PrincipleBlock,  ['title', 'description', 'order']),
     'newsarticle':    (NewsArticle,     ['title', 'subtitle', 'short_description', 'full_content']),
+    'videoblock':     (VideoBlock,      ['title', 'description', 'youtube_url']),
 }
 
 CREATABLE_MODELS = {
@@ -297,4 +298,11 @@ def news_detail(request, news_id):
 
 
 def videos(request):
-    return render(request, 'videos.html')
+    featured_video = VideoBlock.objects.filter(position='featured').first()
+    video_cards = VideoBlock.objects.filter(position='card').order_by('order')
+    school_video = VideoBlock.objects.filter(position='school').first()
+    return render(request, 'videos.html', {
+        'featured_video': featured_video,
+        'video_cards': video_cards,
+        'school_video': school_video,
+    })

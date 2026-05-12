@@ -45,6 +45,28 @@ class PrincipleBlock(models.Model):
         verbose_name_plural = "Қағидалар (Принципы)"
         ordering = ['order']
 
+class VideoBlock(models.Model):
+    POSITION_CHOICES = [
+        ('featured', 'Басты видео (Featured)'),
+        ('card', 'Карточка (Card)'),
+        ('school', 'Мектеп видеосы (School)'),
+    ]
+    title = models.CharField(max_length=300, verbose_name="Тақырып")
+    description = models.TextField(blank=True, verbose_name="Сипаттама")
+    youtube_url = models.URLField(verbose_name="YouTube embed URL",
+                                  help_text="Мысалы: https://www.youtube.com/embed/aqz-KE-bpKQ")
+    position = models.CharField(max_length=20, choices=POSITION_CHOICES, default='card',
+                                verbose_name="Позиция")
+    order = models.IntegerField(default=0, verbose_name="Реттік нөмірі")
+
+    def __str__(self):
+        return f"{self.get_position_display()} – {self.title}"
+
+    class Meta:
+        verbose_name = "Видео блок"
+        verbose_name_plural = "Видео блоктар"
+        ordering = ['position', 'order']
+
 class TeamCategory(models.Model):
     title = models.CharField(max_length=200, verbose_name="Команда аты / Название команды")
     image = models.URLField(verbose_name="Сурет URL / URL изображения", blank=True, null=True)
