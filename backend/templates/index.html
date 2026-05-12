@@ -33,7 +33,7 @@
                 {% endif %}
             </p>
             <a href="#" class="btn btn-primary">Толығырақ білу</a>
-            <a href="#" class="btn btn-outline" style="margin-left: 10px;">Видео көру</a>
+            <a href="{% url 'videos' %}" class="btn btn-outline" style="margin-left: 10px;">Видео көру</a>
         </div>
         <div class="hero-img" id="hero-img-container"
             style="{% if hero_block and hero_block.image %}background-image: url('{{ hero_block.image }}'); background-size: cover; background-position: center;{% endif %}">
@@ -80,34 +80,82 @@
     </div>
 </section>
 
-<section class="principles" data-section="principles">
+<section class="principles" id="principles" data-section="principles">
     <div class="container">
-        <div class="section-header">
+        <div class="principles-header">
             <h2 data-styleable="principles-title">Біздің қағидаларымыз</h2>
-            <p data-styleable="principles-desc">Адамгершілік, құрмет және жайлы білім беру ортасын қалыптастыру</p>
-        </div>
-        <div class="swiper principlesSwiper">
-            <div class="swiper-wrapper">
-                {% for principle in principles %}
-                <div class="swiper-slide card" style="position:relative;">
-                    {% if user.is_staff %}
-                    <a href="{% url 'admin:content_principleblock_change' principle.id %}" class="admin-edit-btn"
-                        target="_blank">✏️ Edit</a>
-                    <button class="admin-edit-btn" style="top:40px;background:rgba(220,38,38,0.85);color:#fff;"
-                        onclick="builderDeleteElement('principleblock','{{ principle.id }}')">🗑️</button>
-                    {% endif %}
-                    <div class="icon-box"><i class="{{ principle.icon }}"></i></div>
-                    <h4 data-editable="principleblock:{{ principle.id }}:title" data-styleable="principle-{{ principle.id }}-title">{{ principle.title }}</h4>
-                    <p style="color: #666;" data-editable="principleblock:{{ principle.id }}:description" data-styleable="principle-{{ principle.id }}-desc">{{ principle.description }}</p>
-                </div>
-                {% endfor %}
+            <div class="principles-nav">
+                <button onclick="document.getElementById('principlesScroll').scrollBy({left:-280,behavior:'smooth'})" aria-label="Артқа">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <button onclick="document.getElementById('principlesScroll').scrollBy({left:280,behavior:'smooth'})" aria-label="Алға">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
             </div>
-            <div class="swiper-pagination"></div>
+        </div>
+
+        <div class="principles-scroll" id="principlesScroll">
+            {% for principle in principles %}
+            <div class="principle-card" style="position:relative;">
+                {% if user.is_staff %}
+                <button class="admin-edit-btn" style="z-index:10;" onclick="openImageUpload('principleblock','{{ principle.id }}','image')">📷</button>
+                <a href="{% url 'admin:content_principleblock_change' principle.id %}" class="admin-edit-btn" style="top:40px;" target="_blank">✏️</a>
+                <button class="admin-edit-btn" style="top:70px;background:rgba(220,38,38,0.85);color:#fff;" onclick="builderDeleteElement('principleblock','{{ principle.id }}')">🗑️</button>
+                {% endif %}
+                <div class="principle-card-img">
+                    {% if principle.image %}
+                    <img src="{{ principle.image }}" alt="{{ principle.title }}">
+                    {% endif %}
+                </div>
+                <div class="principle-card-body">
+                    <h4 data-editable="principleblock:{{ principle.id }}:title" data-styleable="principle-{{ principle.id }}-title">{{ principle.title }}</h4>
+                    <p data-editable="principleblock:{{ principle.id }}:description" data-styleable="principle-{{ principle.id }}-desc">{{ principle.description }}</p>
+                </div>
+            </div>
+            {% empty %}
+            <div class="principle-card">
+                <div class="principle-card-img"></div>
+                <div class="principle-card-body">
+                    <h4>Адамгершілік және құрмет</h4>
+                    <p>Қазақстандық мектептер баланың тұлғалық болмысына баса назар аударып, оған сенім білдіруі керек.</p>
+                </div>
+            </div>
+            <div class="principle-card">
+                <div class="principle-card-img"></div>
+                <div class="principle-card-body">
+                    <h4>Жайлы және қауіпсіз білім беру ортасы</h4>
+                    <p>Оқу процесі стресс тудыратын факторлардан ада болуы керек. Бұл балаларға еркіндік береді.</p>
+                </div>
+            </div>
+            <div class="principle-card">
+                <div class="principle-card-img"></div>
+                <div class="principle-card-body">
+                    <h4>Шығармашылық еркіндік және өз қабілетін таныта білу</h4>
+                    <p>Ашық және қолдау көрсететін орта – балалар мен мұғалімдердің ерекше дарыны мен қабілетін ашудың негізгі факторы.</p>
+                </div>
+            </div>
+            <div class="principle-card">
+                <div class="principle-card-img"></div>
+                <div class="principle-card-body">
+                    <h4>Прогресс және трансформация</h4>
+                    <p>Мектеп білім беру мекемесі болып қана қоймай, өзгерістер агентіне айналуда.</p>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% if user.is_staff %}
+            <div class="principle-card" style="display:flex;align-items:center;justify-content:center;border:2px dashed #ddd;background:transparent;min-height:300px;">
+                <a href="{% url 'admin:content_principleblock_add' %}" target="_blank" style="text-decoration:none;color:#888;display:flex;flex-direction:column;align-items:center;gap:10px;">
+                    <span style="font-size:40px;">➕</span>
+                    <span>Қағида қосу</span>
+                </a>
+            </div>
+            {% endif %}
         </div>
     </div>
 </section>
 
-<section class="projects" data-section="projects">
+<section class="projects" id="projects" data-section="projects">
     <div class="container">
         <div class="section-header">
             <h2 data-styleable="projects-title">Біздің Жобалар</h2>
@@ -142,12 +190,12 @@
                 </div>
                 {% endfor %}
             </div>
-            <div class="swiper-pagination"></div>
+            <div class="swiper-pagination projects-pagination"></div>
         </div>
     </div>
 </section>
 
-<section class="team" style="padding: 100px 0; background: #fff;" data-section="team">
+<section class="team" id="team" style="padding: 100px 0; background: #fff;" data-section="team">
     <div class="container">
         <div class="section-header">
             <h2 data-styleable="team-title">QUNDYLYQ КОМАНДАСЫ</h2>
@@ -205,20 +253,7 @@
         slidesPerView: 1,
         spaceBetween: 30,
         pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-        },
-        breakpoints: {
-            640: { slidesPerView: 2 },
-            1024: { slidesPerView: 3 },
-        },
-    });
-
-    var principlesSwiper = new Swiper(".principlesSwiper", {
-        slidesPerView: 1,
-        spaceBetween: 30,
-        pagination: {
-            el: ".swiper-pagination",
+            el: ".projects-pagination",
             clickable: true,
         },
         breakpoints: {

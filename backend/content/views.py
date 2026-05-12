@@ -11,6 +11,7 @@ from .models import (
 ALLOWED_MODELS = {
     'heroblock': (HeroBlock, ['image']),
     'photoblock': (PhotoBlock, ['image']),
+    'principleblock': (PrincipleBlock, ['image']),
     'teamcategory': (TeamCategory, ['image']),
     'teammember': (TeamMember, ['image']),
     'newsarticle': (NewsArticle, ['card_image']),
@@ -268,23 +269,11 @@ def index(request):
     principles = PrincipleBlock.objects.all().order_by('order')
     team_categories = TeamCategory.objects.all().order_by('order')
 
-    try:
-        site_settings = SiteSettings.get()
-        section_orders = SectionOrder.get_ordered()
-        element_styles = ElementStyle.get_all_dict()
-    except Exception:
-        site_settings = None
-        section_orders = []
-        element_styles = {}
-
     return render(request, 'index.html', {
         'blocks': blocks,
         'hero_block': hero_block,
         'principles': principles,
         'team_categories': team_categories,
-        'site_settings': site_settings,
-        'section_orders': json.dumps(section_orders),
-        'element_styles': json.dumps(element_styles),
     })
 
 
@@ -305,3 +294,7 @@ def news_list(request):
 def news_detail(request, news_id):
     news_item = get_object_or_404(NewsArticle, id=news_id)
     return render(request, 'news_detail.html', {'news_item': news_item})
+
+
+def videos(request):
+    return render(request, 'videos.html')

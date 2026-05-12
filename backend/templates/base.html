@@ -19,7 +19,7 @@
             --bg-light: #f9fafb;
             --white: #ffffff;
             --radius: 12px;
-            --container: 1280px;
+            --container: 1100px;
         }
 
         * {
@@ -127,6 +127,7 @@
         .menu {
             display: flex;
             gap: 30px;
+            align-items: center;
         }
 
         .menu a {
@@ -135,6 +136,106 @@
         }
 
         .menu a:hover {
+            color: var(--accent);
+        }
+
+        .header-socials {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .header-social-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .header-social-icon:hover {
+            opacity: 0.85;
+            transform: scale(1.08);
+        }
+
+        .header-social-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* --- Dropdown menu (Материалдар) --- */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .nav-dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+            font-size: 15px;
+            cursor: pointer;
+            padding: 8px 0;
+            color: var(--text-main);
+            transition: color 0.3s;
+            border: none;
+            background: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .nav-dropdown-toggle:hover {
+            color: var(--accent);
+        }
+
+        .nav-dropdown-toggle svg {
+            width: 12px;
+            height: 12px;
+            transition: transform 0.3s;
+        }
+
+        .nav-dropdown:hover .nav-dropdown-toggle svg {
+            transform: rotate(180deg);
+        }
+
+        .nav-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 180px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+            padding: 10px 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(-50%) translateY(8px);
+            transition: all 0.25s ease;
+            z-index: 1001;
+            border: 1px solid #eaecf0;
+        }
+
+        .nav-dropdown:hover .nav-dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .nav-dropdown-menu a {
+            display: block;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+
+        .nav-dropdown-menu a:hover {
+            background: #f0faf4;
             color: var(--accent);
         }
 
@@ -227,10 +328,6 @@
             display: inline-block;
         }
 
-        text-decoration: none !important;
-        border: 1px solid #e6db55;
-        }
-
         .admin-edit-btn:hover {
             opacity: 1;
             transform: scale(1.05);
@@ -320,47 +417,118 @@
         }
 
         .principles {
-            padding: 100px 0;
+            padding: 80px 0;
         }
 
-        .grid-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
+        .principles-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
         }
 
-        .card {
-            padding: 40px;
-            border-radius: var(--radius);
+        .principles-header h2 {
+            font-size: 32px;
+            color: var(--primary);
+            font-weight: 800;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .principles-nav {
+            display: flex;
+            gap: 12px;
+        }
+
+        .principles-nav button {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: var(--primary);
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.2s;
+        }
+
+        .principles-nav button:hover {
+            opacity: 0.85;
+        }
+
+        .principles-scroll {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            padding-bottom: 10px;
+        }
+
+        .principles-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .principle-card {
+            min-width: 260px;
+            max-width: 260px;
+            flex-shrink: 0;
+            border-radius: 16px;
+            overflow: hidden;
             background: #fff;
             border: 1px solid #eaecf0;
             transition: 0.3s;
             position: relative;
         }
 
-        .card:hover {
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05);
-            transform: translateY(-5px);
-            border-color: var(--accent);
+        .principle-card:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transform: translateY(-4px);
         }
 
-        .icon-box {
-            width: 60px;
-            height: 60px;
-            background: #eff8ff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-            font-size: 24px;
-            margin-bottom: 20px;
+        .principle-card-img {
+            width: 100%;
+            height: 200px;
+            background: var(--primary);
+            position: relative;
+            overflow: hidden;
         }
 
-        .card h4 {
-            font-size: 20px;
-            margin-bottom: 10px;
+        .principle-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            mix-blend-mode: luminosity;
+            opacity: 0.6;
+        }
+
+        .principle-card-img::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(30, 122, 69, 0.3) 0%, rgba(30, 122, 69, 0.6) 100%);
+        }
+
+        .principle-card-body {
+            padding: 20px;
+        }
+
+        .principle-card-body h4 {
+            font-size: 17px;
+            font-weight: 700;
             color: var(--primary);
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .principle-card-body p {
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.5;
         }
 
         .projects {
@@ -427,6 +595,108 @@
             font-size: 14px;
         }
 
+        /* --- Mobile hamburger menu --- */
+        .hamburger-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            z-index: 1002;
+        }
+
+        .hamburger-btn span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--text-main);
+            margin: 5px 0;
+            transition: all 0.3s;
+            border-radius: 2px;
+        }
+
+        .hamburger-btn.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .hamburger-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger-btn.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 999;
+        }
+
+        .mobile-menu-overlay.active {
+            display: block;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px;
+            height: 100vh;
+            background: #fff;
+            z-index: 1001;
+            padding: 80px 30px 30px;
+            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 14px 0;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-main);
+            border-bottom: 1px solid #f0f0f0;
+            transition: color 0.2s;
+        }
+
+        .mobile-menu a:hover {
+            color: var(--accent);
+        }
+
+        .mobile-menu .mobile-dropdown-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-main);
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+        }
+
+        .mobile-menu .mobile-dropdown-items {
+            display: none;
+            padding-left: 16px;
+        }
+
+        .mobile-menu .mobile-dropdown-items.open {
+            display: block;
+        }
+
+        .mobile-menu .mobile-dropdown-items a {
+            font-size: 15px;
+            color: var(--text-light);
+            border-bottom: 1px solid #f8f8f8;
+        }
+
         @media (max-width: 900px) {
             .hero-grid {
                 grid-template-columns: 1fr;
@@ -434,6 +704,18 @@
             }
 
             .menu {
+                display: none;
+            }
+
+            .hamburger-btn {
+                display: block;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .header-actions {
                 display: none;
             }
 
@@ -452,13 +734,28 @@
             <div class="logo" data-styleable="header-logo">QUNDYLYQ<span>.</span></div>
             <nav>
                 <ul class="menu">
-                    <li><a href="{% url 'index' %}" data-styleable="header-menu-1">Басты бет</a></li>
-                    <li><a href="#" data-styleable="header-menu-2">Біз туралы</a></li>
-                    <li><a href="#" data-styleable="header-menu-3">Жобалар</a></li>
+                    <li><a href="{% url 'index' %}" data-styleable="header-menu-2">Біз туралы</a></li>
+                    <li><a href="{% url 'index' %}#projects" data-styleable="header-menu-3">Жобалар</a></li>
+                    <li class="nav-dropdown">
+                        <button class="nav-dropdown-toggle" data-styleable="header-menu-materials">
+                            Материалдар
+                            <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                        <div class="nav-dropdown-menu">
+                            <a href="{% url 'videos' %}">Видео</a>
+                        </div>
+                    </li>
                     <li><a href="{% url 'news_list' %}" data-styleable="header-menu-4">Жаңалықтар</a></li>
-                    <li><a href="#" data-styleable="header-menu-5">Контакты</a></li>
                 </ul>
             </nav>
+            <!-- Mobile hamburger -->
+            <button class="hamburger-btn" id="hamburgerBtn" aria-label="Мәзір">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             <div class="header-actions">
                 {% if user.is_staff %}
                 <div class="edit-mode-toggle"
@@ -491,11 +788,41 @@
                     </style>
                 </div>
                 {% endif %}
-                <span class="lang-switch" data-styleable="header-lang">RU | KZ</span>
+                <div class="header-socials">
+                    <a href="https://www.instagram.com/qundylyq.kz/" target="_blank" rel="noopener" class="header-social-icon" aria-label="Instagram">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                    </a>
+                    <a href="https://t.me/qundylyq" target="_blank" rel="noopener" class="header-social-icon" aria-label="Telegram">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0h-.056zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                    </a>
+                </div>
                 <a href="https://wa.me/77473878338" target="_blank" rel="noopener" class="btn btn-primary" data-styleable="header-cta">Кеңес алу</a>
             </div>
         </div>
     </header>
+
+    <!-- Mobile Menu Drawer -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="{% url 'index' %}">Біз туралы</a>
+        <a href="{% url 'index' %}#projects">Жобалар</a>
+        <div class="mobile-dropdown-title" onclick="this.nextElementSibling.classList.toggle('open')">
+            Материалдар
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="mobile-dropdown-items">
+            <a href="{% url 'videos' %}">Видео</a>
+        </div>
+        <a href="{% url 'news_list' %}">Жаңалықтар</a>
+        <div style="display:flex; gap:12px; padding-top:20px; border-top:1px solid #f0f0f0; margin-top:10px;">
+            <a href="https://www.instagram.com/qundylyq.kz/" target="_blank" rel="noopener" class="header-social-icon" aria-label="Instagram">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            </a>
+            <a href="https://t.me/qundylyq" target="_blank" rel="noopener" class="header-social-icon" aria-label="Telegram">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0h-.056zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+            </a>
+        </div>
+    </div>
 
     {% block content %}
     {% endblock %}
@@ -869,6 +1196,35 @@
 
     {% block extra_scripts %}{% endblock %}
 
+    <!-- Mobile menu JS -->
+    <script>
+        (function() {
+            const btn = document.getElementById('hamburgerBtn');
+            const menu = document.getElementById('mobileMenu');
+            const overlay = document.getElementById('mobileMenuOverlay');
+            if (!btn || !menu) return;
+
+            function toggleMobile() {
+                btn.classList.toggle('active');
+                menu.classList.toggle('active');
+                overlay.classList.toggle('active');
+                document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : '';
+            }
+
+            btn.addEventListener('click', toggleMobile);
+            overlay.addEventListener('click', toggleMobile);
+
+            // Close mobile menu on link click
+            menu.querySelectorAll('a').forEach(function(a) {
+                a.addEventListener('click', function() {
+                    btn.classList.remove('active');
+                    menu.classList.remove('active');
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            });
+        })();
+    </script>
 
 </body>
 

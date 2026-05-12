@@ -1,0 +1,434 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    /* ── Videos Page Styles ── */
+
+    /* Hero Section */
+    .videos-hero {
+        padding: 140px 0 60px;
+        background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+            url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1920&q=80') center/cover no-repeat;
+        color: #fff;
+        position: relative;
+    }
+
+    .videos-hero h1 {
+        font-size: 40px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.85);
+        margin-bottom: 20px;
+        line-height: 1.3;
+    }
+
+    .videos-hero p {
+        font-size: 15px;
+        line-height: 1.7;
+        color: rgba(255, 255, 255, 0.85);
+        max-width: 900px;
+    }
+
+    /* Featured Video Section */
+    .featured-video-section {
+        padding: 80px 0;
+        background: #fff;
+    }
+
+    .featured-video-wrapper {
+        max-width: 700px;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    .featured-video-frame {
+        width: 100%;
+        aspect-ratio: 16/9;
+        background: #1a2332;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    .featured-video-frame iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    /* Decorative arrow */
+    .decorative-arrow {
+        position: absolute;
+        right: -80px;
+        bottom: -30px;
+        width: 100px;
+        height: 100px;
+        pointer-events: none;
+    }
+
+    .decorative-arrow svg {
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Video Cards Section */
+    .video-cards-section {
+        padding: 60px 0 80px;
+        background: var(--primary);
+        color: #fff;
+    }
+
+    .video-cards-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+    }
+
+    .video-cards-header h2 {
+        font-size: 32px;
+        font-weight: 700;
+        color: #fff;
+    }
+
+    .video-cards-nav {
+        display: flex;
+        gap: 10px;
+    }
+
+    .video-cards-nav button {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        background: transparent;
+        color: #fff;
+        font-size: 18px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+    }
+
+    .video-cards-nav button:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #fff;
+    }
+
+    .video-cards-scroll {
+        display: flex;
+        gap: 24px;
+        overflow-x: auto;
+        padding-bottom: 20px;
+        scroll-behavior: smooth;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .video-cards-scroll::-webkit-scrollbar {
+        display: none;
+    }
+
+    .video-card {
+        min-width: 320px;
+        max-width: 320px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        overflow: hidden;
+        flex-shrink: 0;
+        transition: transform 0.3s, box-shadow 0.3s;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .video-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .video-card-thumbnail {
+        width: 100%;
+        aspect-ratio: 16/9;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .video-card-thumbnail iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    .video-card-body {
+        padding: 20px;
+    }
+
+    .video-card-body h3 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #fff;
+        line-height: 1.4;
+    }
+
+    .video-card-body p {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 5;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* YouTube Button */
+    .youtube-btn-wrapper {
+        padding: 40px 0 0;
+    }
+
+    .youtube-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 28px;
+        border: 2px solid #fff;
+        border-radius: 50px;
+        color: #fff;
+        font-weight: 600;
+        font-size: 15px;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+
+    .youtube-btn:hover {
+        background: #fff;
+        color: var(--primary);
+    }
+
+    .youtube-btn svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    /* School Video Section */
+    .school-video-section {
+        padding: 80px 0;
+        background: #fff;
+    }
+
+    .school-video-section h2 {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--text-main);
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .school-video-frame {
+        max-width: 750px;
+        margin: 0 auto;
+        aspect-ratio: 16/9;
+        background: #1a2332;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+    }
+
+    .school-video-frame iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+        .videos-hero h1 {
+            font-size: 28px;
+        }
+
+        .video-card {
+            min-width: 280px;
+            max-width: 280px;
+        }
+
+        .video-cards-header h2 {
+            font-size: 24px;
+        }
+
+        .decorative-arrow {
+            display: none;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .videos-hero {
+            padding: 110px 0 40px;
+        }
+
+        .videos-hero h1 {
+            font-size: 24px;
+        }
+
+        .video-card {
+            min-width: 260px;
+            max-width: 260px;
+        }
+
+        .school-video-section h2 {
+            font-size: 24px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══ Hero Section ═══ -->
+<section class="videos-hero">
+    <div class="container">
+        <h1>Құндылықтарды дәріптеуге бағытталған видеолар</h1>
+        <p>
+            Құндылықтарға негізделген білім беру заман талаптарын ескере отырып, адамның ізгі қасиеттерінің маңызын
+            көрсететін видеолар
+            топтамасын ұсынамыз. Әр бейнероликте адам бойына қажетті құндылықтарды насихаттайтын тақырыптар қамтылған.
+        </p>
+    </div>
+</section>
+
+<!-- ═══ Featured Video ═══ -->
+<section class="featured-video-section">
+    <div class="container">
+        <div class="featured-video-wrapper">
+            <div class="featured-video-frame">
+                <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ?rel=0" title="QUNDYLYQ.KZ"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+            </div>
+            <!-- Decorative green arrow -->
+            <div class="decorative-arrow">
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 10 C60 10, 80 30, 80 60 C80 75, 70 85, 55 90" stroke="#1e7a45" stroke-width="3"
+                        fill="none" stroke-linecap="round" stroke-dasharray="6 4" />
+                    <polygon points="50,95 60,85 55,90" fill="#1e7a45" />
+                </svg>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ Video Cards (Green Section) ═══ -->
+<section class="video-cards-section">
+    <div class="container">
+        <div class="video-cards-header">
+            <h2>Басқа видеолар</h2>
+            <div class="video-cards-nav">
+                <button onclick="scrollVideoCards(-1)" aria-label="Previous">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <button onclick="scrollVideoCards(1)" aria-label="Next">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="video-cards-scroll" id="videoCardsScroll">
+            <!-- Card 1 -->
+            <div class="video-card">
+                <div class="video-card-thumbnail">
+                    <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ?rel=0" title="Көк тудың желбірегені"
+                        allowfullscreen></iframe>
+                </div>
+                <div class="video-card-body">
+                    <h3>Көк тудың желбірегені</h3>
+                    <p>Нәтижеге жету үшін ең бірінші не қажет деп ойлайсыз? Әрине бірлік! Өзгелермен бір мақсатта
+                        жасалыңқы жасаспайсыз? Ел бірлігін сақтау мол сеніздің даңынына вес үлесіміді қосу
+                        ынтымақтастық.</p>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="video-card">
+                <div class="video-card-thumbnail">
+                    <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ?rel=0" title="Берекелі дастарқан"
+                        allowfullscreen></iframe>
+                </div>
+                <div class="video-card-body">
+                    <h3>Берекелі дастарқан</h3>
+                    <p>Сізге қонақ келсе, қонақтың жағдайын жасаңызбы? Оз қалауыңдағы горі қонақтың қалауын жоғары қою
+                        алассіз ба? Жомарттық – қол мол кеңілді дыбыстырын көрсететін адамның ен жоғарғы қасиеті.</p>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="video-card">
+                <div class="video-card-thumbnail">
+                    <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ?rel=0" title="Эй, чу-чу"
+                        allowfullscreen></iframe>
+                </div>
+                <div class="video-card-body">
+                    <h3>ЭЙ, ЧУ-ЧУ</h3>
+                    <p>Сіз отмінідде алған шашымізді сонына дейін жеткізетін бо? Қандай кодарпріслого тон болдыңыз?
+                        Мақсатта жеткенмоі соамыңыз қандай болды? Әр адама өмірде ез орнын табу үшін көбір қасиетсеі іс.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="video-card">
+                <div class="video-card-thumbnail">
+                    <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ?rel=0" title="Идеальная жизнь"
+                        allowfullscreen></iframe>
+                </div>
+                <div class="video-card-body">
+                    <h3>Идеальная жизнь</h3>
+                    <p>Как вы думаете, какой жизни? Счастливо ли Достигато ли мы пашей жизни на – мышлений? Принудерсе
+                        не нел що жаңалық разговор по дулмаці которая нас но бе coto с.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- YouTube Button -->
+        <div class="youtube-btn-wrapper">
+            <a href="https://www.youtube.com/@BilimInnovation" target="_blank" rel="noopener" class="youtube-btn">
+                <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.38.55A3.02 3.02 0 0 0 .5 6.19 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14c1.88.55 9.38.55 9.38.55s7.5 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.81zM9.75 15.02V8.98L15.5 12l-5.75 3.02z" />
+                </svg>
+                YouTube-ке өту
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ School Video Section ═══ -->
+<section class="school-video-section">
+    <div class="container">
+        <h2>Құндылықтарға негізделген мектеп жайлы</h2>
+        <div class="school-video-frame">
+            <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ?rel=0" title="Құндылықтарға негізделген мектеп жайлы"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function scrollVideoCards(direction) {
+        const container = document.getElementById('videoCardsScroll');
+        const scrollAmount = 344; // card width + gap
+        container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+    }
+</script>
+{% endblock %}

@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 class PhotoBlock(models.Model):
     title = models.CharField(max_length=200, verbose_name="Тақырып / Заголовок")
@@ -33,6 +34,7 @@ class PrincipleBlock(models.Model):
     title = models.CharField(max_length=200, verbose_name="Тақырып / Заголовок")
     description = models.TextField(verbose_name="Сипаттама / Описание")
     icon = models.CharField(max_length=50, default="fas fa-star", help_text="FontAwesome class (e.g., 'fas fa-heart')", verbose_name="Иконка (FontAwesome)")
+    image = models.URLField(blank=True, null=True, verbose_name="Сурет URL")
     order = models.IntegerField(default=0, verbose_name="Реттік нөмірі / Порядок")
 
     def __str__(self):
@@ -73,7 +75,6 @@ class TeamMember(models.Model):
         verbose_name_plural = "Команда мүшелері"
         ordering = ['order']
 
-from django.utils import timezone
 
 class NewsArticle(models.Model):
     title = models.CharField(max_length=200, verbose_name="Тақырып (Title)")

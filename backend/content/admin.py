@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import PhotoBlock, HeroBlock, PrincipleBlock, TeamMember, TeamCategory, NewsArticle, SiteSettings
+from .models import PhotoBlock, HeroBlock, PrincipleBlock, TeamMember, TeamCategory, NewsArticle, SiteSettings, SectionOrder, ElementStyle
 
 @admin.register(PhotoBlock)
 class PhotoBlockAdmin(admin.ModelAdmin):
@@ -69,3 +69,16 @@ class SiteSettingsAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+@admin.register(SectionOrder)
+class SectionOrderAdmin(admin.ModelAdmin):
+    list_display = ('section_key', 'order', 'is_visible', 'bg_color', 'card_bg_color')
+    list_editable = ('order', 'is_visible', 'bg_color', 'card_bg_color')
+    ordering = ('order',)
+
+
+@admin.register(ElementStyle)
+class ElementStyleAdmin(admin.ModelAdmin):
+    list_display = ('element_id', 'color', 'font_family', 'font_size', 'font_weight')
+    search_fields = ('element_id',)

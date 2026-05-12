@@ -27,6 +27,7 @@ urlpatterns = [
     path('team/<int:category_id>/', views.team_detail, name='team_detail'),
     path('news/', views.news_list, name='news_list'),
     path('news/<int:news_id>/', views.news_detail, name='news_detail'),
+    path('videos/', views.videos, name='videos'),
     path('api/update-image/', views.update_image_url, name='update_image_url'),
     path('api/create-hero/', views.create_hero_block, name='create_hero_block'),
     path('api/clear-image/', views.clear_image_url, name='clear_image_url'),
