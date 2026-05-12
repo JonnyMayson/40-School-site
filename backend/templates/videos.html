@@ -257,10 +257,14 @@
         font-weight: 600;
         cursor: pointer;
         text-decoration: none;
-        display: inline-flex;
+        display: none;
         align-items: center;
         gap: 4px;
         transition: all 0.2s;
+    }
+
+    body.edit-mode-active .video-edit-btn {
+        display: inline-flex;
     }
 
     .video-edit-btn:hover {
@@ -277,13 +281,17 @@
     .video-add-card {
         min-width: 320px;
         max-width: 320px;
-        display: flex;
+        display: none;
         align-items: center;
         justify-content: center;
         border: 2px dashed rgba(255, 255, 255, 0.3);
         border-radius: 16px;
         min-height: 280px;
         flex-shrink: 0;
+    }
+
+    body.edit-mode-active .video-add-card {
+        display: flex;
     }
 
     .video-add-card a {
